@@ -1,0 +1,17 @@
+<ion-view view-title="Nearby">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/nearby/{{chat.id}}">
+        <img ng-src="{{chat.face}}">
+        <h2>{{chat.name}}</h2>
+        <p>{{chat.lastText}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+
+    <a class="button button-full button-positive" ui-sref="tab.create">
+      Create Event
+    </a>
+
+  </ion-content>
+</ion-view>
