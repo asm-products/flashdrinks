@@ -7,8 +7,8 @@ angular.module('starter.controllers', [])
 })
 
 .controller('BarDetailCtrl', function($scope, $stateParams, Bars, bar) {
+  $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
-  $scope.opt = Bars.opt ;
 })
 
 .controller('FriendsCtrl', function($scope, Friends) {

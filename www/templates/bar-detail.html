@@ -8,8 +8,28 @@
   <ion-content class="padding">
     <img ng-src="{{::bar.icon}}" style="width: 64px; height: 64px">
     <!--<p>{{::bar.description}}</p>-->
-    <a class="button button-full button-positive" ng-click="opt(bar)">
+    <a class="button button-full" ng-class="{'button-assertive': bar.sync.members['lefnire'], 'button-balanced': !bar.sync.members['lefnire']}" ng-click="Bars.opt(bar)">
       {{bar.sync.members["lefnire"] ? "I'm out" : "I'm in"}}
     </a>
+
+    <div class="list card">
+
+      <div class="item item-divider">
+        Chat
+      </div>
+
+      <form class="item" novalidate ng-submit="Bars.chat(bar, text);text=''">
+        <label class="item item-input">
+          <textarea placeholder="Chat Message" ng-model="text"></textarea>
+        </label>
+        <input type='submit' class="button button-block button-positive" value="Submit" />
+      </form>
+
+      <div class="item item-icon-left" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'">
+        <i class="icon ion-chatbubble"></i>
+        {{::chat.user}}: {{::chat.text}}
+      </div>
+    </div>
+
   </ion-content>
 </ion-view>

@@ -39,6 +39,13 @@ angular.module('starter.services', [])
       bar.sync.count += (bar.sync.members["lefnire"] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
       bar.sync.$save();
+    },
+    chat: function(bar, text){
+      $firebase(ref.child(bar.id).child('chat')).$asArray().$add({
+        timestamp: Firebase.ServerValue.TIMESTAMP,
+        text: text,
+        user: "lefnire"
+      });
     }
   }
 })
