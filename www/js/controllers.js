@@ -1,17 +1,16 @@
 angular.module('starter.controllers', [])
 
-.controller('NearbyCtrl', function($scope, Chats) {
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  }
+.controller('BarsCtrl', function($scope, Bars) {
+  Bars.all().then(function(bars){
+    $scope.bars = bars;
+  });
 })
 
 .controller('CreateCtrl', function($scope) {
 })
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
+.controller('BarDetailCtrl', function($scope, $stateParams, Bars) {
+  $scope.bar = Bars.get($stateParams.barId);
 })
 
 .controller('FriendsCtrl', function($scope, Friends) {

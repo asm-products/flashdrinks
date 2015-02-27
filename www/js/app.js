@@ -38,12 +38,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
   // Each tab has its own nav history stack:
 
-  .state('tab.nearby', {
-      url: '/nearby',
+  .state('tab.bars', {
+      url: '/bars',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-nearby.html',
-          controller: 'NearbyCtrl'
+        'tab-bars': {
+          templateUrl: 'templates/tab-bars.html',
+          controller: 'BarsCtrl'
+        }
+      }
+    })
+    .state('tab.bar-detail', {
+      url: '/bars/:barId',
+      views: {
+        'tab-bars': {
+          templateUrl: 'templates/bar-detail.html',
+          controller: 'BarDetailCtrl'
         }
       }
     })
@@ -54,16 +63,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         'tab-chats': {
           templateUrl: 'templates/tab-create.html',
           controller: 'CreateCtrl'
-        }
-      }
-    })
-
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
         }
       }
     })
@@ -98,6 +97,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/nearby');
+  $urlRouterProvider.otherwise('/tab/bars');
 
 });
