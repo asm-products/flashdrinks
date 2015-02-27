@@ -6,11 +6,9 @@ angular.module('starter.controllers', [])
   });
 })
 
-.controller('CreateCtrl', function($scope) {
-})
-
-.controller('BarDetailCtrl', function($scope, $stateParams, Bars) {
-  $scope.bar = Bars.get($stateParams.barId);
+.controller('BarDetailCtrl', function($scope, $stateParams, Bars, bar) {
+  $scope.bar = bar; //in state.resolve, required for view title
+  $scope.opt = Bars.opt ;
 })
 
 .controller('FriendsCtrl', function($scope, Friends) {
