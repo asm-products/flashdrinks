@@ -115,6 +115,10 @@ angular.module('starter.services', [])
         return authObj.$authAnonymously();
       }
       return deferred.promise;
+    },
+    facebook: function(){
+      //if (authData.hasFacebook) resolve //TODO see above
+      return authObj.$authWithOAuthPopup("facebook");
     }
   }
 })
