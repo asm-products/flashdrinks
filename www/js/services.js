@@ -4,27 +4,75 @@ angular.module('starter.services', [])
   return new $window.Firebase("https://flashdrink.firebaseio.com");
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth) {
-  var deferred = $q.defer();
+.factory('Cache', function(DSCacheFactory){
+  return DSCacheFactory('flash', {storageMode: 'localStorage'});
+})
 
+.factory('Position', function($q, Cache){
+  var position = {
+    _coords: null,
+    getCoords: function(){
+      var deferred = $q.defer();
+      if (position._coords) {
+        deferred.resolve(position._coords);
+      } else {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          deferred.resolve(position.coords);
+          Cache.put('position',position.coords);
+        }, function(err){
+          deferred.reject(err);
+        }, {maximumAge:300000});
+      }
+      return deferred.promise;
+    },
+    hasChanged: function(){
+      var cached = Cache.get('position');
+      var deferred = $q.defer();
+      position.getCoords().then(function(coords){
+        var decimalPlace = 4; // 4th decimal place, see http://gis.stackexchange.com/a/8674
+        deferred.resolve(
+          cached.latitude.toFixed(decimalPlace) != coords.latitude.toFixed(decimalPlace) ||
+          cached.longitude.toFixed(decimalPlace) != coords.longitude.toFixed(decimalPlace)
+        );
+      });
+      return deferred.promise;
+    }
+  }
+  return position;
+})
+
+.factory('Bars', function($q, ref, $firebase, Auth, Cache, Position) {
+  var deferred = $q.defer();
+  var bars = Cache.get('bars');
   //var sync = $firebase(ref);
 
-  navigator.geolocation.getCurrentPosition(function(position) {
-    var pyrmont = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-    var request = {
-      location: pyrmont,
-      radius: '2500',
-      types: ['bar']
-    };
-    var service = new google.maps.places.PlacesService(document.getElementById("map"));
-    service.nearbySearch(request, function(results, status) {
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        deferred.resolve(results);
-        _.each(results, function(bar){
-          bar.sync = $firebase(ref.child('events').child(bar.id)).$asObject();
-        })
-      }
-    });
+  Position.hasChanged().then(function(hasChanged){
+    if (hasChanged || !bars) {
+      Position.getCoords().then(function (coords) {
+        var pyrmont = new google.maps.LatLng(coords.latitude, coords.longitude);
+        var request = {
+          location: pyrmont,
+          radius: '2500',
+          types: ['bar']
+        };
+        var service = new google.maps.places.PlacesService(document.getElementById("map"));
+        service.nearbySearch(request, function (results, status) {
+          if (status == google.maps.places.PlacesServiceStatus.OK) {
+            deferred.resolve(results);
+            Cache.put('bars', results);
+            _.each(results, function (bar) {
+              bar.sync = $firebase(ref.child('events').child(bar.id)).$asObject();
+            })
+          }
+        });
+      })
+    } else {
+      deferred.resolve(bars);
+      //TODO DRY:
+      _.each(bars, function (bar) {
+        bar.sync = $firebase(ref.child('events').child(bar.id)).$asObject();
+      })
+    }
   });
 
   return {

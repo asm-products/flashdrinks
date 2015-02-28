@@ -6,6 +6,7 @@
     "lodash": "~3.3.1",
     "angularfire": "~0.9.2",
     "firebase": "~2.2.1",
-    "angular-filter": "~0.5.4"
+    "angular-filter": "~0.5.4",
+    "angular-cache": "~3.2.5"
   }
 }
