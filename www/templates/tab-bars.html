@@ -1,8 +1,8 @@
 <ion-view view-title="Bars">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="bar in bars" type="item-text-wrap" href="#/tab/bars/{{::bar.id}}">
-        <img ng-src="{{::bar.icon}}">
+      <ion-item class="item-remove-animate item-thumbnail-left item-icon-right" ng-repeat="bar in bars" type="item-text-wrap" href="#/tab/bars/{{::bar.id}}">
+        <img ng-src="{{::bar.icon}}" />
         <h2>{{::bar.name}}</h2>
         <span class="badge badge-assertive">{{bar.sync.count}}</span>
         <i class="icon ion-chevron-right icon-accessory"></i>

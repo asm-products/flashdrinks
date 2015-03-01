@@ -25,9 +25,10 @@
         <input type='submit' class="button button-block button-positive" value="Submit" />
       </form>
 
-      <div class="item item-icon-left" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'">
-        <i class="icon ion-chatbubble"></i>
-        {{::chat.user}}: {{::chat.text}}
+      <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="pic = chat.user.facebook.cachedUserProfile.picture.data.url">
+        <img ng-src='{{::pic || "img/anon.png"}}' />
+        <h2>{{chat.user.facebook.displayName || chat.user.uid}}</h2>
+        <p>{{::chat.text}}</p>
       </div>
     </div>
 
