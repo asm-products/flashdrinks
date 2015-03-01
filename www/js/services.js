@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('app.services', [])
 
 .factory('ref', function($window){
   return new $window.Firebase("https://flashdrink.firebaseio.com");
@@ -119,6 +119,17 @@ angular.module('starter.services', [])
     facebook: function(){
       //if (authData.hasFacebook) resolve //TODO see above
       return authObj.$authWithOAuthPopup("facebook");
+    }
+  }
+})
+
+.factory('Friends', function(){
+  return {
+    all: function(){
+      return [];
+    },
+    get: function(){
+      return {};
     }
   }
 })
