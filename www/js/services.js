@@ -124,12 +124,18 @@ angular.module('app.services', [])
 })
 
 .factory('Friends', function(){
-  return {
+  var friends = {
     all: function(){
-      return [];
+      return [
+        {id: "1", name:"Lisa", picture:'img/anon.png'},
+        {id: "2", name:"Ryan", picture:'img/anon.png'},
+        {id: "3", name:"Lara", picture:'img/anon.png'},
+        {id: "4", name:"Tyler", picture:'img/anon.png'},
+      ];
     },
-    get: function(){
-      return {};
+    get: function(friendId){
+      return _.find(friends.all(), {id:friendId});
     }
   }
+  return friends;
 })

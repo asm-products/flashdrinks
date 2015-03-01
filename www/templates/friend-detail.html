@@ -6,10 +6,7 @@ The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{friend.name}}">
   <ion-content class="padding">
-    <img ng-src="{{friend.face}}" style="width: 64px; height: 64px">
-    <h3>Notes</h3>
-    <p>
-      {{friend.notes}}
-    </p>
+    <img ng-src="{{friend.picture}}" style="width: 64px; height: 64px">
+    <h3>{{friend.name}}</h3>
   </ion-content>
 </ion-view>
