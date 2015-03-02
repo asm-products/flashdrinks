@@ -1,7 +1,15 @@
 angular.module('app.services', [])
 
 .factory('ref', function($window){
-  return new $window.Firebase("https://flashdrink.firebaseio.com");
+  var root = new $window.Firebase("https://flashdrink.firebaseio.com")
+  var ref = {
+    root: root,
+    users: root.child('users'),
+    bars: root.child('bars'),
+    chat: root.child('chat')
+  }
+  return ref;
+
 })
 
 .factory('Cache', function(DSCacheFactory){
@@ -9,6 +17,7 @@ angular.module('app.services', [])
 })
 
 .factory('Position', function($q, Cache){
+  //TODO cached deferred up here
   var position = {
     _coords: null,
     getCoords: function(){
@@ -61,7 +70,7 @@ angular.module('app.services', [])
             deferred.resolve(results);
             Cache.put('bars', results);
             _.each(results, function (bar) {
-              bar.sync = $firebase(ref.child('events').child(bar.id)).$asObject();
+              bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
             })
           }
         });
@@ -70,7 +79,7 @@ angular.module('app.services', [])
       deferred.resolve(bars);
       //TODO DRY:
       _.each(bars, function (bar) {
-        bar.sync = $firebase(ref.child('events').child(bar.id)).$asObject();
+        bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
       })
     }
   });
@@ -85,16 +94,17 @@ angular.module('app.services', [])
       });
     },
     opt: function(bar){
+      // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
+      // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
       _.defaults(bar.sync, {members:{}, count:0});
-      Auth.getUser().then(function(user){
-        bar.sync.members[user.uid] = !bar.sync.members[user.uid];
-        bar.sync.count += (bar.sync.members[user.uid] ? 1 : -1);
-        if (!bar.sync.count) delete bar.sync.count;
-        bar.sync.$save();
-      })
+      var user = $firebase(Auth.getUser()).$asObject();
+      bar.sync.members[user.uid] = !bar.sync.members[user.uid];
+      bar.sync.count += (bar.sync.members[user.uid] ? 1 : -1);
+      if (!bar.sync.count) delete bar.sync.count;
+      bar.sync.$save();
     },
     chat: function(user, bar, text){
-      $firebase(ref.child('events').child(bar.id).child('chat')).$asArray().$add({
+      $firebase(ref.bars.child(bar.id).child('chat')).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,
         user: user
@@ -104,50 +114,59 @@ angular.module('app.services', [])
 })
 
 .factory('Auth', function($q, ref, $firebase, $firebaseAuth){
-  var authObj = $firebaseAuth(ref);
+  var authObj = $firebaseAuth(ref.root);
 
   // When we register a new user, save it to /users collection too. We need users
   authObj.$onAuth(function(authData) {
     if (authData) {
-      var fbUser = $firebase(ref.child('users').child(authData.uid)).$asObject();
-      var extra = {
-        picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png'
-      }
-      _.defaults(fbUser, authData, extra); // this prevents overwriting existing values
-      fbUser.$save();
+      $firebase(ref.users.child(authData.uid)).$update({
+        picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png',
+        name: authData.facebook && authData.facebook.displayName || authData.uid,
+        auth: authData
+      })
     }
   });
 
-  return {
+  var Auth = {
+    _user: null,
     getUser: function(){
-      var deferred = $q.defer();
+      if (Auth._user) return Auth._user;
       var authData = authObj.$getAuth();
-      if (authData) {
-        deferred.resolve(authData);
-      } else {
-        return authObj.$authAnonymously();
-      }
-      return deferred.promise;
+      if (!authData) authData = authObj.$authAnonymously();
+      Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
+      return Auth._user;
     },
     facebook: function(){
-      //if (authData.hasFacebook) resolve //TODO see above
-      return authObj.$authWithOAuthPopup("facebook");
+      if (Auth._user.facebook) return Auth._user;
+      var authData = authObj.$authWithOAuthPopup("facebook");
+      Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
+      return Auth._user;
     }
   }
+  return Auth;
 })
 
-.factory('Friends', function($firebase, ref){
+.factory('Friends', function($firebase, ref, Auth){
   var friends = {
     all: function(){
-      return [
-        {id: "1", name:"Lisa", picture:'img/anon.png'},
-        {id: "2", name:"Ryan", picture:'img/anon.png'},
-        {id: "3", name:"Lara", picture:'img/anon.png'},
-        {id: "4", name:"Tyler", picture:'img/anon.png'},
-      ];
+      var u = Auth.getUser();
+      if (!u.friends) {
+        u.friends = {};
+        u.$save()
+      }
+      return u.friends;
     },
     get: function(friendId){
-      return $firebase(ref.child('users').child(friendId)).$asObject();
+      return $firebase(ref.users.child(friendId)).$asObject();
+    },
+    favorite: function(friend) {
+      var fid = friend.$id,
+        uid = Auth.getUser().$id;
+      if (friends.all()[fid]){
+        ref.users.child(uid).child('friends').child(fid).remove();
+      } else {
+        ref.users.child(uid).child('friends').child(fid).set(true);
+      }
     }
   }
   return friends;

@@ -27,10 +27,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'firebase', '
     url: "/tab",
     abstract: true,
     templateUrl: "templates/tabs.html",
-    controller: function($scope, Auth){
-      Auth.getUser().then(function(user){
-        $scope.user = user;
-      })
+    controller: function($scope, Auth, $firebase, ref){
+      $scope.user = Auth.getUser();
+      $scope.$firebase = $firebase;
+      $scope.ref = ref;
     }
   })
 
