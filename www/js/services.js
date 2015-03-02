@@ -97,14 +97,27 @@ angular.module('app.services', [])
       $firebase(ref.child('events').child(bar.id).child('chat')).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,
-        user: user.uid
+        user: user
       });
     }
   }
 })
 
-.factory('Auth', function($q, ref, $firebaseAuth){
+.factory('Auth', function($q, ref, $firebase, $firebaseAuth){
   var authObj = $firebaseAuth(ref);
+
+  // When we register a new user, save it to /users collection too. We need users
+  authObj.$onAuth(function(authData) {
+    if (authData) {
+      var fbUser = $firebase(ref.child('users').child(authData.uid)).$asObject();
+      var extra = {
+        picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png'
+      }
+      _.defaults(fbUser, authData, extra); // this prevents overwriting existing values
+      fbUser.$save();
+    }
+  });
+
   return {
     getUser: function(){
       var deferred = $q.defer();
@@ -123,7 +136,7 @@ angular.module('app.services', [])
   }
 })
 
-.factory('Friends', function(){
+.factory('Friends', function($firebase, ref){
   var friends = {
     all: function(){
       return [
@@ -134,7 +147,7 @@ angular.module('app.services', [])
       ];
     },
     get: function(friendId){
-      return _.find(friends.all(), {id:friendId});
+      return $firebase(ref.child('users').child(friendId)).$asObject();
     }
   }
   return friends;

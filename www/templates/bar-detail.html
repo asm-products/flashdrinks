@@ -26,7 +26,7 @@
       </form>
 
       <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="pic = chat.user.facebook.cachedUserProfile.picture.data.url">
-        <img ng-src='{{::pic || "img/anon.png"}}' />
+        <img ng-src='{{::pic || "img/anon.png"}}' ui-sref="tab.friend-detail({friendId:chat.user.uid})" />
         <h2>{{chat.user.facebook.displayName || chat.user.uid}}</h2>
         <p>{{::chat.text}}</p>
       </div>
