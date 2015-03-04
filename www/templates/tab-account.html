@@ -15,5 +15,19 @@
       </ion-item>
 
     </ion-list>
+
+    <ion-list ng-controller="AppCtrl">
+      <ion-item>
+        <button class="button" ng-click="pickContact()">Contacts</button>
+      </ion-item>
+      <ion-item ng-repeat="contact in data.selectedContacts" class="item-thumbnail-left">
+        <img src="{{contact.photos[0].value}}" ng-if="contact.photos.length > 0">
+        <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Silver_-_replace_this_image_male.svg/200px-Silver_-_replace_this_image_male.svg.png" ng-if="contact.photos.length === 0">
+        <h2>{{contact.displayName}}</h2>
+        <p ng-if="contact.emails.length > 0">{{contact.emails[0].type}} : {{contact.emails[0].value}}</p>
+        <p ng-if="contact.phones.length > 0">{{contact.phones[0].type}} : {{contact.phones[0].value}}</p>
+      </ion-item>
+    </ion-list>
+
   </ion-content>
 </ion-view>
