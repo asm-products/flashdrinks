@@ -15,31 +15,9 @@ The Friends service returns an array of friend data
   <ion-content class="padding">
     <img ng-src="{{friend.picture}}" style="width: 80px; height: 80px">
     <h3>{{friend.name}}</h3>
-
-    <div class="list card">
-      <div class="item item-divider">
-        Chat
-      </div>
-      <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in data.chats | toArray | orderBy:'-timestamp'" ng-init="profile=$firebase(ref.users.child(chat.uid)).$asObject()">
-        <img ng-src='{{profile.picture}}' ui-sref="tab.friend-detail({friendId:profile.$id})" />
-        <h2>{{profile.name}}</h2>
-        <p>{{::chat.text}}</p>
-      </div>
-    </div>
-
+    <chat-list chat-id="[user.$id, friend.$id]"></chat-list>
   </ion-content>
 
-  <!--Footer-->
-  <!--https://github.com/mhartington/Ionic-Chat/blob/master/www/index.html-->
-  <!--http://codepen.io/rossmartin/pen/XJmpQr-->
-  <form novalidate ng-submit="chat()">
-    <ion-footer-bar class="bar-stable item-input-inset">
-      <label class="item-input-wrapper">
-        <input type="text" placeholder="Type your message" ng-model="data.text" />
-      </label>
-      <button type="submit" class="button button-icon icon ion-android-send footer-btn" ng-disabled="!data.text" />
-    </ion-footer-bar>
-  </form>
-
+  <ion-footer-bar />
 
 </ion-view>
