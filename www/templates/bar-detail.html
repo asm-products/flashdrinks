@@ -8,8 +8,8 @@
   <ion-content class="padding">
     <img ng-src="{{::bar.icon}}" style="width: 64px; height: 64px">
     <!--<p>{{::bar.description}}</p>-->
-    <a class="button button-full" ng-class="{'button-assertive': bar.sync.members[user.uid], 'button-balanced': !bar.sync.members[user.uid]}" ng-click="Bars.opt(bar)">
-      {{bar.sync.members[user.uid] ? "I'm out" : "I'm in"}}
+    <a class="button button-full" ng-class="{'button-assertive': bar.sync.members[user.$id], 'button-balanced': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
+      {{bar.sync.members[user.$id] ? "I'm out" : "I'm in"}}
     </a>
 
     <div class="list card">
@@ -25,9 +25,9 @@
         <input type='submit' class="button button-block button-positive" value="Submit" />
       </form>
 
-      <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="pic = chat.user.facebook.cachedUserProfile.picture.data.url">
-        <img ng-src='{{::pic || "img/anon.png"}}' ui-sref="tab.friend-detail({friendId:chat.user.uid})" />
-        <h2>{{chat.user.facebook.displayName || chat.user.uid}}</h2>
+      <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="profile=$firebase(ref.users.child(chat.uid)).$asObject()">
+        <img ng-src='{{profile.picture}}' ui-sref="tab.friend-detail({friendId:profile.$id})" />
+        <h2>{{profile.auth.facebook.displayName || profile.$id}}</h2>
         <p>{{::chat.text}}</p>
       </div>
     </div>

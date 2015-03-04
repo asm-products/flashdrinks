@@ -97,9 +97,9 @@ angular.module('app.services', [])
       // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
       // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
       _.defaults(bar.sync, {members:{}, count:0});
-      var user = $firebase(Auth.getUser()).$asObject();
-      bar.sync.members[user.uid] = !bar.sync.members[user.uid];
-      bar.sync.count += (bar.sync.members[user.uid] ? 1 : -1);
+      var user = Auth.getUser();
+      bar.sync.members[user.$id] = !bar.sync.members[user.$id];
+      bar.sync.count += (bar.sync.members[user.$id] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
       bar.sync.$save();
     },
@@ -107,7 +107,7 @@ angular.module('app.services', [])
       $firebase(ref.bars.child(bar.id).child('chat')).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,
-        user: user
+        uid: user.$id
       });
     }
   }
@@ -138,9 +138,9 @@ angular.module('app.services', [])
     },
     facebook: function(){
       if (Auth._user.facebook) return Auth._user;
-      var authData = authObj.$authWithOAuthPopup("facebook");
-      Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
-      return Auth._user;
+      var authData = authObj.$authWithOAuthPopup("facebook").then(function(){
+        Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
+      });
     }
   }
   return Auth;

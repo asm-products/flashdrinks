@@ -2,8 +2,8 @@
   <ion-content>
     <ion-list>
       <ion-item>
-        <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="!user.facebook.id">Login or Register</button>
-        <div ng-if="user.facebook.id">Logged in as {{user.facebook.displayName}}</div>
+        <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="!user.auth.facebook.id">Login or Register</button>
+        <div ng-if="user.auth.facebook.id">Logged in as {{user.auth.facebook.displayName}}</div>
       </ion-item>
 
       <!--<ion-item class="item-toggle">-->
