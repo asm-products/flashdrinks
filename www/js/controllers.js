@@ -11,7 +11,7 @@ angular.module('app.controllers', [])
   $scope.bar = bar; //in state.resolve, required for view title
 })
 
-.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal){
+.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, $window){
   $scope.data = {
     selectedContacts : []
   };
@@ -24,11 +24,35 @@ angular.module('app.controllers', [])
         console.log($scope.data.selectedContacts);
       },
       function(failure) {
+        //$scope.data.selectedContacts.push({phones:[{type:'work', value:'805-975-5236'}], displayName: "Contacts not available (sample user)", emails:[{type:'sample',value:'sample@user.com'}]});
         console.log("Bummer.  Failed to pick a contact");
       }
     );
   }
 
+  $scope.sendSMS = function(contacts, bar){
+    var nums = _.transform(contacts, function(m,v){
+      if (v.phones[0]) m.push(v.phones[0].value);
+    }, []);
+    var options = {
+      replaceLineBreaks: false, // true to replace \n by a new line, false by default
+      android: {
+        intent: 'INTENT'  // send SMS with the native android SMS messaging
+        //intent: '' // send SMS without open any other app
+      }
+    };
+    var message = "Come to the bar with me tonight! Deets at https://flashdrink.firebaseapp.com/#/tab/bars/"+bar.id;
+    console.log(message);
+    $window.sms.send(nums, message, options, function(){
+      console.log('message sent successfully');
+      $scope.data.selectedContacts = [];
+      $scope.modal.hide();
+    }, function(err){
+      console.log(err);
+    });
+  }
+
+  // ---- MODAL ----
   $ionicModal.fromTemplateUrl('templates/invite-friends.html', {
     scope: $scope,
     animation: 'slide-in-up'
