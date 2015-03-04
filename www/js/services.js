@@ -130,39 +130,42 @@ angular.module('app.services', [])
       } else {
         ref.users.child(uid).child('friends').child(fid).set(true);
       }
+    },
+    chatId: function(userId, friendId) {
+      // the chatroom b/w these two users will be userId+friendId. To ensure it always comes out the same, sort the strings firsts
+      var chatId = [userId, friendId].sort();
+      return chatId[0]+chatId[1];
+    },
+    chat: function(user, friend, text){
+      $firebase(ref.chat.child( friends.chatId(user.$id, friend.$id) )).$asArray().$add({
+        timestamp: Firebase.ServerValue.TIMESTAMP,
+        text: text,
+        uid: user.$id
+      });
     }
   }
   return friends;
 })
 
-  .service("ContactsService", ['$q', function($q) {
-
+.service("ContactsService", ['$q', function($q) {
     var formatContact = function(contact) {
-
       return {
         "displayName"   : contact.name.formatted || contact.name.givenName + " " + contact.name.familyName || "Mystery Person",
         "emails"        : contact.emails || [],
         "phones"        : contact.phoneNumbers || [],
         "photos"        : contact.photos || []
       };
-
     };
 
     var pickContact = function() {
-
       var deferred = $q.defer();
-
       if(navigator && navigator.contacts) {
-
         navigator.contacts.pickContact(function(contact){
-
           deferred.resolve( formatContact(contact) );
         });
-
       } else {
         deferred.reject("Bummer.  No contacts in desktop browser");
       }
-
       return deferred.promise;
     };
 

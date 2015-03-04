@@ -90,9 +90,17 @@ angular.module('app.controllers', [])
   //$scope.friends = Friends.all();
 })
 
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
+.controller('FriendDetailCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
   $scope.friend = Friends.get($stateParams.friendId);
   $scope.favorite = Friends.favorite;
+  var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);
+  $scope.data = {
+    chats: $firebase(ref.chat.child(chatId)).$asArray()
+  };
+  $scope.chat = function(){
+    Friends.chat($scope.user, $scope.friend, $scope.data.text);
+    $scope.data.text = '';
+  }
 
 })
 
