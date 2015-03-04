@@ -9,6 +9,13 @@ angular.module('app.controllers', [])
 .controller('BarDetailCtrl', function($scope, $stateParams, Bars, bar) {
   $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
+  $scope.data = {
+    text: ''
+  }
+  $scope.chat = function(){
+    Bars.chat($scope.user, $scope.bar, $scope.data.text);
+    $scope.data.text = '';
+  }
 })
 
 .controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, $window){

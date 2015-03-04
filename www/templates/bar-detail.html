@@ -4,30 +4,28 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{::bar.name}} ({{bar.sync.count}})">
+<ion-view view-title="{{::bar.name}}">
+
+  <!--Header-->
+  <ion-nav-buttons side="right">
+    <button class="button icon-left" ng-class="{'button-assertive ion-thumbsdown': bar.sync.members[user.$id], 'button-balanced ion-thumbsup': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
+      {{bar.sync.members[user.$id] ? "Not Coming" : "Coming"}}
+    </button>
+    <button class="button icon ion-person-add" ng-controller="InviteFriendsCtrl" ng-click="openModal()"></button>
+  </ion-nav-buttons>
+
+  <!--Content-->
   <ion-content class="padding">
-    <img ng-src="{{::bar.icon}}" style="width: 64px; height: 64px">
-    <!--<p>{{::bar.description}}</p>-->
-    <a class="button button-full" ng-class="{'button-assertive': bar.sync.members[user.$id], 'button-balanced': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
-      {{bar.sync.members[user.$id] ? "I'm out" : "I'm in"}}
-    </a>
-    <a class="button button-full" ng-controller="InviteFriendsCtrl" ng-click="openModal()">
-      Invite Friends
-    </a>
+    <img ng-src="{{::bar.icon}}" style="width: 80px; height: 80px" />
+    <div ng-if="bar.sync.count>0">
+      <span class="badge badge-assertive">{{bar.sync.count}}</span> people coming.
+    </div>
+
 
     <div class="list card">
-
       <div class="item item-divider">
         Chat
       </div>
-
-      <form class="item" novalidate ng-submit="Bars.chat(user, bar, text);text=''">
-        <label class="item item-input">
-          <textarea placeholder="Chat Message" ng-model="text"></textarea>
-        </label>
-        <input type='submit' class="button button-block button-positive" value="Submit" />
-      </form>
-
       <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="profile=$firebase(ref.users.child(chat.uid)).$asObject()">
         <img ng-src='{{profile.picture}}' ui-sref="tab.friend-detail({friendId:profile.$id})" />
         <h2>{{profile.name}}</h2>
@@ -36,4 +34,18 @@
     </div>
 
   </ion-content>
+
+  <!--Footer-->
+  <!--https://github.com/mhartington/Ionic-Chat/blob/master/www/index.html-->
+  <!--http://codepen.io/rossmartin/pen/XJmpQr-->
+  <form novalidate ng-submit="chat()">
+    <ion-footer-bar class="bar-stable item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" placeholder="Type your message" ng-model="data.text" />
+        </label>
+        <button type="submit" class="button button-icon icon ion-android-send footer-btn" ng-disabled="!data.text" />
+    </ion-footer-bar>
+  </form>
+
+
 </ion-view>

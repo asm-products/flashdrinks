@@ -5,13 +5,16 @@ The FriendsCtrl pulls data from the Friends service (service.js)
 The Friends service returns an array of friend data
 -->
 <ion-view view-title="{{friend.name}}">
-  <ion-content class="padding">
 
-    <img ng-src="{{friend.picture}}" style="width: 80px; height: 80px">
-
-    <h3>{{friend.name}}</h3>
-
+  <!--Header-->
+  <ion-nav-buttons side="right">
     <button class="button icon" ng-class="{'ion-ios7-heart-outline': !user.friends[friend.$id], 'ion-ios7-heart': user.friends[friend.$id]}" ng-click="favorite(friend)"></button>
+  </ion-nav-buttons>
 
+  <!--Content-->
+  <ion-content class="padding">
+    <img ng-src="{{friend.picture}}" style="width: 80px; height: 80px">
+    <h3>{{friend.name}}</h3>
   </ion-content>
+
 </ion-view>
