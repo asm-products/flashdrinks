@@ -11,6 +11,9 @@
     <a class="button button-full" ng-class="{'button-assertive': bar.sync.members[user.$id], 'button-balanced': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
       {{bar.sync.members[user.$id] ? "I'm out" : "I'm in"}}
     </a>
+    <a class="button button-full" ng-controller="InviteFriendsCtrl" ng-click="openModal()">
+      Invite Friends
+    </a>
 
     <div class="list card">
 
