@@ -1,20 +1,18 @@
 <ion-view view-title="Account">
   <ion-content>
     <ion-list>
+
       <ion-item>
         <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="!user.auth.facebook.id">Login or Register</button>
-        <div ng-if="user.auth.facebook.id">Logged in as {{user.auth.facebook.displayName}}</div>
+        <div ng-if="user.auth.facebook.id">Logged in as {{user.name}}</div>
       </ion-item>
 
-      <!--<ion-item class="item-toggle">-->
-        <!--Enable Friends-->
-        <!--<label class="toggle">-->
-          <!--<input type="checkbox" ng-model="settings.enableFriends">-->
-          <!--<div class="track">-->
-            <!--<div class="handle"></div>-->
-          <!--</div>-->
-        <!--</label>-->
-      <!--</ion-item>-->
+      <ion-item class="item-input item-stacked-label">
+          <label>
+            <span class="input-label">Profile Name</span>
+            <input type="text" ng-model="fbUser.name">
+          </label>
+      </ion-item>
 
     </ion-list>
   </ion-content>

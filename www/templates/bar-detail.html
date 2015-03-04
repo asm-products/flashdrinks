@@ -27,7 +27,7 @@
 
       <div class="item item-thumbnail-left item-text-wrap" ng-repeat="chat in bar.sync.chat | toArray | orderBy:'-timestamp'" ng-init="profile=$firebase(ref.users.child(chat.uid)).$asObject()">
         <img ng-src='{{profile.picture}}' ui-sref="tab.friend-detail({friendId:profile.$id})" />
-        <h2>{{profile.auth.facebook.displayName || profile.$id}}</h2>
+        <h2>{{profile.name}}</h2>
         <p>{{::chat.text}}</p>
       </div>
     </div>
