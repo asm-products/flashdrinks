@@ -20,42 +20,27 @@ angular.module('app.services', [])
   var deferred = $q.defer();
   var bars = Cache.get('bars');
 
+  // Debugging
+  var SKIP_CACHE=false;
+  //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
 
-  function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
-    return result;
-  }
-
-  if (!bars || true) {
+  if (!bars || SKIP_CACHE) {
     navigator.geolocation.getCurrentPosition(function (position) {
-
-      var method = 'GET';
-      var url = 'http://api.yelp.com/v2/search';
       var params = {
         category_filter: 'nightlife', //https://www.yelp.com/developers/documentation/v2/all_category_list
-        ll: position.coords.latitude + ',' + position.coords.longitude,
-        callback: 'angular.callbacks._0',
-        oauth_consumer_key: '', //Consumer Key
-        oauth_token: '', //Token
-        oauth_signature_method: "HMAC-SHA1",
-        oauth_timestamp: new Date().getTime(),
-        oauth_nonce: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        ll: position.coords.latitude + ',' + position.coords.longitude
       };
-      var consumerSecret = ''; //Consumer Secret
-      var tokenSecret = ''; //Token Secret
-      var signature = oauthSignature.generate(method, url, params, consumerSecret, tokenSecret, { encodeSignature: false});
-      params['oauth_signature'] = signature;
-      $http.jsonp(url, {params: params}).success(function(results){
+      // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
+      $http.get('http://lefnire-server-misc.herokuapp.com/yelp-search', {params: params}).success(function(results){
         results = results.businesses;
         deferred.resolve(results);
         Cache.put('bars', results);
         _.each(results, function (bar) {
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
         })
-      });
+      }).error(deferred.reject);
 
-    }, deferred.reject, {maximumAge:300000});
+    }, deferred.reject, {maximumAge:300000, timeout:5000});
   } else {
     deferred.resolve(bars);
     //TODO DRY:

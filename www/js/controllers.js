@@ -3,6 +3,8 @@ angular.module('app.controllers', [])
 .controller('BarsCtrl', function($scope, Bars) {
   Bars.all().then(function(bars){
     $scope.bars = bars;
+  }, function(){
+    debugger;
   });
 })
 
