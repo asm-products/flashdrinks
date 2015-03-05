@@ -16,7 +16,8 @@
 
   <!--Content-->
   <ion-content class="padding">
-    <img ng-src="{{::bar.icon}}" style="width: 80px; height: 80px" />
+    <img ng-src="{{::bar.image_url}}" style="width: 80px; height: 80px" />
+    <p>{{::bar.snippet_text}}</p>
     <div ng-if="bar.sync.count>0">
       <span class="badge badge-assertive">{{bar.sync.count}}</span> people coming.
     </div>

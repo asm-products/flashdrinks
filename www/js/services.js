@@ -16,28 +16,45 @@ angular.module('app.services', [])
   return DSCacheFactory('flash', {storageMode: 'localStorage'});
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, Cache) {
+.factory('Bars', function($q, ref, $firebase, Auth, Cache, $http) {
   var deferred = $q.defer();
   var bars = Cache.get('bars');
 
-  if (!bars) {
+
+  function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+  }
+
+  if (!bars || true) {
     navigator.geolocation.getCurrentPosition(function (position) {
-      var pyrmont = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      var request = {
-        location: pyrmont,
-        radius: '2500',
-        types: ['bar']
+
+      var method = 'GET';
+      var url = 'http://api.yelp.com/v2/search';
+      var params = {
+        category_filter: 'nightlife', //https://www.yelp.com/developers/documentation/v2/all_category_list
+        ll: position.coords.latitude + ',' + position.coords.longitude,
+        callback: 'angular.callbacks._0',
+        oauth_consumer_key: '', //Consumer Key
+        oauth_token: '', //Token
+        oauth_signature_method: "HMAC-SHA1",
+        oauth_timestamp: new Date().getTime(),
+        oauth_nonce: randomString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
       };
-      var service = new google.maps.places.PlacesService(document.getElementById("map"));
-      service.nearbySearch(request, function (results, status) {
-        if (status == google.maps.places.PlacesServiceStatus.OK) {
-          deferred.resolve(results);
-          Cache.put('bars', results);
-          _.each(results, function (bar) {
-            bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
-          })
-        }
+      var consumerSecret = ''; //Consumer Secret
+      var tokenSecret = ''; //Token Secret
+      var signature = oauthSignature.generate(method, url, params, consumerSecret, tokenSecret, { encodeSignature: false});
+      params['oauth_signature'] = signature;
+      $http.jsonp(url, {params: params}).success(function(results){
+        results = results.businesses;
+        deferred.resolve(results);
+        Cache.put('bars', results);
+        _.each(results, function (bar) {
+          bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
+        })
       });
+
     }, deferred.reject, {maximumAge:300000});
   } else {
     deferred.resolve(bars);
