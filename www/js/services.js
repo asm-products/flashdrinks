@@ -21,7 +21,7 @@ angular.module('app.services', [])
   var bars = Cache.get('bars');
 
   // Debugging
-  var SKIP_CACHE=false;
+  var SKIP_CACHE=true;
   //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
 
   if (!bars || SKIP_CACHE) {
@@ -31,7 +31,7 @@ angular.module('app.services', [])
         ll: position.coords.latitude + ',' + position.coords.longitude
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-      $http.get('http://lefnire-server-misc.herokuapp.com/yelp-search', {params: params}).success(function(results){
+      $http.get('https://lefnire-server-misc.herokuapp.com/yelp-search', {params: params}).success(function(results){
         results = results.businesses;
         deferred.resolve(results);
         Cache.put('bars', results);
