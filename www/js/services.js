@@ -82,6 +82,18 @@ angular.module('app.services', [])
         name: authData.facebook && authData.facebook.displayName || authData.uid,
         auth: authData
       })
+
+      // Track users on auth, see https://assembly.com/flashdrinks/metrics/snippet
+      ;(function(p,l,o,w,i){if(!p[i]){p.__asml=p.__asml||[];
+        p.__asml.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+        };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+        n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","https://d1uxm17u44dmmr.cloudfront.net/1.0.0/asml.js","asml"));
+      asml('create', '48247aa736075991c0a88e67e7fc9257175ebc77');
+      if (authData.facebook) {
+        asml('track', CryptoJS.MD5(authData.uid).toString());
+      } else {
+        asml('track');
+      }
     }
   });
 

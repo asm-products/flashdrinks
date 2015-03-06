@@ -8,6 +8,7 @@
     "firebase": "~2.2.1",
     "angular-filter": "~0.5.4",
     "angular-cache": "~3.2.5",
-    "css-social-buttons": "git@github.com:samcollins/css-social-buttons.git"
+    "css-social-buttons": "git@github.com:samcollins/css-social-buttons.git",
+    "crypto-js": "https://github.com/evanvosberg/crypto-js.git#~3.1.2"
   }
 }
