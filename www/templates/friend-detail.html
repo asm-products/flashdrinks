@@ -13,8 +13,12 @@ The Friends service returns an array of friend data
 
   <!--Content-->
   <ion-content class="padding">
-    <img ng-src="{{friend.picture}}" style="width: 80px; height: 80px">
-    <h3>{{friend.name}}</h3>
+    <ion-list>
+      <ion-item class="item-thumbnail-left">
+        <img ng-src="{{friend.picture}}">
+        <h3>{{friend.name}}</h3>
+      </ion-item>
+    </ion-list>
     <chat-list chat-id="[user.$id, friend.$id]"></chat-list>
   </ion-content>
 

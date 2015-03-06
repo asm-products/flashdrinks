@@ -28,7 +28,7 @@ angular.module('app.directives', [])
         '<input type="text" placeholder="Type your message" ng-model="data.text" />'+
         '</label>'+
         '<button ng-click="send()" class="button button-icon icon ion-android-send footer-btn" ng-disabled="!data.text" />';
-      element.parent().parent().parent().find('ion-footer-bar').addClass('bar-stable item-input-inset').append($compile(tpl)(scope));
+      element.parent().parent().parent().parent().parent().find('ion-footer-bar').addClass('bar-stable item-input-inset').append($compile(tpl)(scope));
 
       var user = Auth.getUser();
       scope.chats = $firebase(ref.chat.child( chatId(scope.chatId) )).$asArray();
