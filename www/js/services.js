@@ -12,19 +12,11 @@ angular.module('app.services', [])
 
 })
 
-.factory('Cache', function(DSCacheFactory){
-  return DSCacheFactory('flash', {storageMode: 'localStorage'});
-})
-
-.factory('Bars', function($q, ref, $firebase, Auth, Cache, $http) {
-  var deferred = $q.defer();
-  var bars = Cache.get('bars');
-
-  // Debugging
-  var SKIP_CACHE=true;
-  //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
-
-  if (!bars || SKIP_CACHE) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http) {
+  var deferred;
+  var refreshBars = function(){
+    deferred = $q.defer();
+    //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
     navigator.geolocation.getCurrentPosition(function (position) {
       var params = {
         category_filter: 'nightlife', //https://www.yelp.com/developers/documentation/v2/all_category_list
@@ -34,23 +26,18 @@ angular.module('app.services', [])
       $http.get('https://lefnire-server-misc.herokuapp.com/yelp-search', {params: params}).success(function(results){
         results = results.businesses;
         deferred.resolve(results);
-        Cache.put('bars', results);
         _.each(results, function (bar) {
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
         })
       }).error(deferred.reject);
 
     }, deferred.reject, {maximumAge:300000, timeout:5000});
-  } else {
-    deferred.resolve(bars);
-    //TODO DRY:
-    _.each(bars, function (bar) {
-      bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
-    })
   }
+  refreshBars();
 
   return {
-    all: function() {
+    all: function(refresh) {
+      if (refresh) refreshBars();
       return deferred.promise;
     },
     get: function(barId) {

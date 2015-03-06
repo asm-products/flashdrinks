@@ -1,11 +1,17 @@
 angular.module('app.controllers', [])
 
-.controller('BarsCtrl', function($scope, Bars) {
-  Bars.all().then(function(bars){
-    $scope.bars = bars;
-  }, function(){
-    debugger;
-  });
+.controller('BarsCtrl', function($scope, Bars, $ionicLoading) {
+  $ionicLoading.show({template: 'Loading...'});
+  $scope.refresh = function(force){
+    Bars.all(force).then(function(bars){
+      $scope.bars = bars;
+      $scope.$broadcast('scroll.refreshComplete');
+      $ionicLoading.hide();
+    }, function(){
+      debugger;
+    });
+  }
+  $scope.refresh(false);
 })
 
 .controller('BarDetailCtrl', function($scope, $stateParams, Bars, bar) {

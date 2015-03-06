@@ -1,4 +1,4 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directives', 'firebase', 'angular.filter', 'angular-data.DSCacheFactory'])
+angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directives', 'firebase', 'angular.filter'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
