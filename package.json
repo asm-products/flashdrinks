@@ -16,6 +16,9 @@
   },
   "cordovaPlugins": [
     "org.apache.cordova.contacts",
-    "org.apache.cordova.geolocation"
+    "org.apache.cordova.geolocation",
+    "org.apache.cordova.device",
+    "org.apache.cordova.console",
+    "com.ionic.keyboard"
   ]
 }
