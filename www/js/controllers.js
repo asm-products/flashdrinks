@@ -1,6 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('BarListCtrl', function($scope, Bars, $ionicLoading) {
+.controller('BarListCtrl', function($scope, Bars, $ionicLoading, $timeout) {
+  $scope.data = {
+    searching:false
+  };
   $ionicLoading.show({template: 'Loading...'});
   $scope.refresh = function(force){
     Bars.all(force).then(function(bars){

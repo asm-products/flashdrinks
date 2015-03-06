@@ -1,10 +1,22 @@
 <ion-view view-title="Bars">
+
+  <!--Header-->
+  <ion-nav-buttons side="right">
+    <button class="button icon button-icon ion-search" ng-click="data.searching = !data.searching"></button>
+  </ion-nav-buttons>
+
   <ion-content>
 
     <ion-refresher  pulling-text="Pull to refresh..." on-refresh="refresh(true)"></ion-refresher>
 
     <ion-list>
-      <ion-item class="item-remove-animate item-thumbnail-left item-icon-right" ng-repeat="bar in bars" type="item-text-wrap" href="#/app/bars/{{::bar.id}}">
+
+      <label class="item item-input" ng-if="data.searching">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" placeholder="Search" ng-model="data.search" autofocus />
+      </label>
+
+      <ion-item class="item-remove-animate item-thumbnail-left item-icon-right" ng-repeat="bar in bars | filter:data.search" type="item-text-wrap" href="#/app/bars/{{::bar.id}}">
         <img ng-src="{{::bar.image_url}}" />
         <h2>{{::bar.name}}</h2>
         <p>
@@ -16,4 +28,5 @@
       </ion-item>
     </ion-list>
   </ion-content>
+
 </ion-view>
