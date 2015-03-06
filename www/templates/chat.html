@@ -5,7 +5,7 @@
   No messages, be the first to say something.
 </div>
 <ion-item class="item-avatar item-text-wrap" ng-repeat="chat in chats | toArray | orderBy:'-timestamp'" ng-init="profile=getProfile(chat.uid)">
-  <img ng-src='{{profile.picture}}' ui-sref="tab.friend-detail({friendId:profile.$id})" />
+  <img ng-src='{{profile.picture}}' ui-sref="app.friend-show({friendId:profile.$id})" />
   <h2>{{profile.name}}</h2>
   <p>{{::chat.text}}</p>
 </ion-item>

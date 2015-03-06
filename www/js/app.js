@@ -23,10 +23,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
   $stateProvider
 
   // setup an abstract state for the tabs directive
-  .state('tab', {
-    url: "/tab",
+  .state('app', {
+    url: "/app",
     abstract: true,
-    templateUrl: "templates/tabs.html",
+    templateUrl: "templates/app.html",
     controller: function($scope, Auth, $firebase, ref){
       $scope.user = Auth.getUser();
       $scope.$firebase = $firebase;
@@ -36,16 +36,16 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
 
   // Each tab has its own nav history stack:
 
-  .state('tab.bars', {
+  .state('app.bars', {
       url: '/bars',
       views: {
-        'tab-bars': {
-          templateUrl: 'templates/tab-bars.html',
-          controller: 'BarsCtrl'
+        'menuContent': {
+          templateUrl: 'templates/bars/list.html',
+          controller: 'BarListCtrl'
         }
       }
     })
-    .state('tab.bar-detail', {
+    .state('app.bar-show', {
       url: '/bars/:barId',
       resolve: {
         bar: function($stateParams, Bars){
@@ -53,53 +53,43 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
         }
       },
       views: {
-        'tab-bars': {
-          templateUrl: 'templates/bar-detail.html',
-          controller: 'BarDetailCtrl'
+        'menuContent': {
+          templateUrl: 'templates/bars/show.html',
+          controller: 'BarShowCtrl'
         }
       }
     })
 
-    .state('tab.create', {
-      url: '/create',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-create.html',
-          controller: 'CreateCtrl'
-        }
-      }
-    })
-
-  .state('tab.friends', {
+  .state('app.friends', {
       url: '/friends',
       views: {
-        'tab-friends': {
-          templateUrl: 'templates/tab-friends.html',
-          controller: 'FriendsCtrl'
+        'menuContent': {
+          templateUrl: 'templates/friends/list.html',
+          controller: 'FriendListCtrl'
         }
       }
     })
-    .state('tab.friend-detail', {
-      url: '/friend/:friendId',
+    .state('app.friend-show', {
+      url: '/friends/:friendId',
       views: {
-        'tab-friends': {
-          templateUrl: 'templates/friend-detail.html',
-          controller: 'FriendDetailCtrl'
+        'menuContent': {
+          templateUrl: 'templates/friends/show.html',
+          controller: 'FriendShowCtrl'
         }
       }
     })
 
-  .state('tab.account', {
+  .state('app.account', {
     url: '/account',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
+      'menuContent': {
+        templateUrl: 'templates/account.html',
         controller: 'AccountCtrl'
       }
     }
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/bars');
+  $urlRouterProvider.otherwise('/app/bars');
 
 });

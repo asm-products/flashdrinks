@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('BarsCtrl', function($scope, Bars, $ionicLoading) {
+.controller('BarListCtrl', function($scope, Bars, $ionicLoading) {
   $ionicLoading.show({template: 'Loading...'});
   $scope.refresh = function(force){
     Bars.all(force).then(function(bars){
@@ -14,7 +14,7 @@ angular.module('app.controllers', [])
   $scope.refresh(false);
 })
 
-.controller('BarDetailCtrl', function($scope, $stateParams, Bars, bar) {
+.controller('BarShowCtrl', function($scope, $stateParams, Bars, bar) {
   $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
   $scope.data = {
@@ -68,7 +68,7 @@ angular.module('app.controllers', [])
   }
 
   // ---- MODAL ----
-  $ionicModal.fromTemplateUrl('templates/invite-friends.html', {
+  $ionicModal.fromTemplateUrl('templates/friends/invite.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
@@ -94,11 +94,11 @@ angular.module('app.controllers', [])
   });
 })
 
-.controller('FriendsCtrl', function($scope, Friends) {
+.controller('FriendListCtrl', function($scope, Friends) {
   //$scope.friends = Friends.all();
 })
 
-.controller('FriendDetailCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
+.controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
   $scope.friend = Friends.get($stateParams.friendId);
   $scope.favorite = Friends.favorite;
   var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);

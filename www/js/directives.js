@@ -12,7 +12,7 @@ angular.module('app.directives', [])
   };
 
   return {
-    templateUrl: "templates/chat/list.html",
+    templateUrl: "templates/chat.html",
     restrict: "E",
     scope: {
       chatId: '='
