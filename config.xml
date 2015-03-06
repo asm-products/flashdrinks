@@ -8,7 +8,11 @@
       Ionic Framework Team
     </author>
   <content src="index.html"/>
+
   <access origin="*"/>
+  <access origin="geo:*" launch-external="yes" />
+  <access origin="maps:*" launch-external="yes" />
+
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

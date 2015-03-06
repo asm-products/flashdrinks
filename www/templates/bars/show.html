@@ -18,7 +18,7 @@
       <ion-item ng-if="bar.sync.count>0">
         {{bar.sync.count}} are people coming.
       </ion-item>
-      <a class="item item-icon-left" href="https://maps.google.com/?q={{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}">
+      <a class="item item-icon-left" ng-href="geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}" target="_blank">
         <i class="icon ion-map"></i>
         {{::bar.distance*0.000621371192 | number:2}} miles away
       </a>

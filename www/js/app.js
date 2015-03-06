@@ -14,6 +14,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
   });
 })
 
+.config(function($compileProvider) {
+  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|geo):/);
+})
+
 .config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
