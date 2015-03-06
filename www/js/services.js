@@ -64,10 +64,15 @@ angular.module('app.services', [])
   // When we register a new user, save it to /users collection too. We need users
   authObj.$onAuth(function(authData) {
     if (authData) {
+
+      // Save the auth object to user, but only secure/needed fields
+      var authFields = _.pick(authData, ['uid', 'provider', 'facebook']);
+      authFields.facebook = _.pick(authData.facebook, ['cachedUserProfile', 'displayName', 'email', 'id']);
+
       $firebase(ref.users.child(authData.uid)).$update({
         picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png',
         name: authData.facebook && authData.facebook.displayName || authData.uid,
-        auth: authData
+        auth: authFields
       })
 
       // Track users on auth, see https://assembly.com/flashdrinks/metrics/snippet
