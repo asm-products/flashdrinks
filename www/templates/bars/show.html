@@ -10,20 +10,24 @@
 
   <!--Content-->
   <ion-content class="padding">
-    <ion-list>
-      <ion-item class="item-thumbnail-left">
+    <div class="list">
+
+      <div class="item item-thumbnail-left">
         <img ng-src="{{::bar.image_url}}" style="width: 80px; height: 80px" />
         <p>{{::bar.snippet_text}}</p>
-      </ion-item>
-      <ion-item ng-if="bar.sync.count>0">
+      </div>
+
+      <div class="item" ng-if="bar.sync.count>0">
         {{bar.sync.count}} are people coming.
-      </ion-item>
+      </div>
+
       <a class="item item-icon-left" ng-href="geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}" target="_blank">
         <i class="icon ion-map"></i>
         {{::bar.distance*0.000621371192 | number:2}} miles away
       </a>
+
       <chat-list chat-id="bar.id"></chat-list>
-    </ion-list>
+    </div>
   </ion-content>
 
   <ion-footer-bar />

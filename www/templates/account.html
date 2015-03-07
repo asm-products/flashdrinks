@@ -1,20 +1,20 @@
 <ion-view view-title="Account">
   <ion-content>
-    <ion-list>
+    <div class="list">
 
-      <ion-item>
+      <div class="item">
         <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="!user.auth.facebook.id">Login or Register</button>
         <div ng-if="user.auth.facebook.id">Logged in as {{user.name}}</div>
-      </ion-item>
+      </div>
 
-      <ion-item class="item-input item-stacked-label">
-          <label>
-            <span class="input-label">Profile Name</span>
-            <input type="text" ng-model="fbUser.name">
-          </label>
-      </ion-item>
+      <div class="item item-input item-stacked-label">
+        <label>
+          <span class="input-label">Profile Name</span>
+          <input type="text" ng-model="fbUser.name">
+        </label>
+      </div>
 
-    </ion-list>
+    </div>
 
   </ion-content>
 </ion-view>

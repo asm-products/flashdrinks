@@ -7,13 +7,13 @@
 
   <!--Content-->
   <ion-content class="padding">
-    <ion-list>
-      <ion-item class="item-thumbnail-left">
+    <div class="list">
+      <div class="item item-thumbnail-left">
         <img ng-src="{{friend.picture}}">
         <h3>{{friend.name}}</h3>
-      </ion-item>
-    </ion-list>
-    <chat-list chat-id="[user.$id, friend.$id]"></chat-list>
+      </div>
+      <chat-list chat-id="[user.$id, friend.$id]"></chat-list>
+    </div>
   </ion-content>
 
   <ion-footer-bar />
