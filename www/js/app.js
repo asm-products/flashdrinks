@@ -35,6 +35,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
       $scope.user = Auth.getUser();
       $scope.$firebase = $firebase;
       $scope.ref = ref;
+      $scope.android = ionic.Platform.platform() == 'android';
     }
   })
 
