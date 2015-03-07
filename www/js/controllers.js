@@ -21,7 +21,8 @@ angular.module('app.controllers', [])
   $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
   $scope.data = {
-    text: ''
+    text: '',
+    showMembers: false
   }
   $scope.chat = function(){
     Bars.chat($scope.user, $scope.bar, $scope.data.text);

@@ -36,6 +36,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directiv
       $scope.$firebase = $firebase;
       $scope.ref = ref;
       $scope.android = ionic.Platform.platform() == 'android';
+      $scope.getProfile = function(uid){
+        return $firebase(ref.users.child(uid)).$asObject()
+      }
     }
   })
 

@@ -2,9 +2,6 @@
 
   <!--Header-->
   <ion-nav-buttons side="right">
-    <button class="button icon-left" ng-class="{'button-assertive ion-thumbsdown': bar.sync.members[user.$id], 'button-balanced ion-thumbsup': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
-      {{bar.sync.members[user.$id] ? "Not Coming" : "Coming"}}
-    </button>
     <button class="button icon ion-person-add" ng-controller="InviteFriendsCtrl" ng-click="openModal()"></button>
   </ion-nav-buttons>
 
@@ -17,8 +14,22 @@
         <p>{{::bar.snippet_text}}</p>
       </div>
 
-      <div class="item" ng-if="bar.sync.count>0">
-        {{bar.sync.count}} are people coming.
+      <div class="item item-button-right">
+        {{bar.sync.members[user.$id] ? "You are joining tonight" : "You are not joining tonight"}}
+        <button class="button button-small" ng-class="{'button-assertive': bar.sync.members[user.$id], 'button-balanced': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
+          {{bar.sync.members[user.$id] ? "Leave" : "Join"}}
+        </button>
+      </div>
+
+      <div class="item item-icon-right" ng-if="bar.sync.count>0" ng-click="data.showMembers=!data.showMembers">
+        {{bar.sync.count}} are people coming
+        <i class="icon icon-accessory" ng-class="{'ion-chevron-right':!data.showMembers, 'ion-chevron-up':data.showMembers}"></i>
+        <ion-list ng-if="data.showMembers">
+          <ion-item class="item-avatar" ng-repeat="(uid,member) in bar.sync.members" href="#/app/friends/{{::profile.$id}}" ng-init="profile=getProfile(uid)">
+            <img ng-src="{{::profile.picture}}" />
+            <h2>{{::profile.name}}</h2>
+          </ion-item>
+        </ion-list>
       </div>
 
       <a class="item item-icon-left" ng-href="geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}" target="_blank">

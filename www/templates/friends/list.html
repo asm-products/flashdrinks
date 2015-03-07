@@ -1,9 +1,10 @@
 <ion-view view-title="Friends">
   <ion-content>
     <ion-list>
-      <ion-item class="item-thumbnail-left" ng-repeat="(k,v) in user.friends" ng-init="friend=$firebase(ref.users.child(k)).$asObject()" type="item-text-wrap" href="#/app/friends/{{::friend.$id}}">
+      <ion-item class="item-thumbnail-left item-icon-right" ng-repeat="(k,v) in user.friends" ng-init="friend=$firebase(ref.users.child(k)).$asObject()" type="item-text-wrap" href="#/app/friends/{{::friend.$id}}">
         <img ng-src="{{friend.picture}}" />
         <h2>{{friend.name}}</h2>
+        <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>
   </ion-content>
