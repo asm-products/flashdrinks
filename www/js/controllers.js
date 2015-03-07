@@ -107,7 +107,7 @@ angular.module('app.controllers', [])
   $scope.favorite = Friends.favorite;
   var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);
   $scope.data = {
-    chats: $firebase(ref.chat.child(chatId)).$asArray()
+    chats: $firebase(ref.chats.child(chatId)).$asArray()
   };
   $scope.chat = function(){
     Friends.chat($scope.user, $scope.friend, $scope.data.text);

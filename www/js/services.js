@@ -6,7 +6,7 @@ angular.module('app.services', [])
     root: root,
     users: root.child('users'),
     bars: root.child('bars'),
-    chat: root.child('chat')
+    chats: root.child('chats'),
   }
   return ref;
 
@@ -136,7 +136,7 @@ angular.module('app.services', [])
       return chatId[0]+chatId[1];
     },
     chat: function(user, friend, text){
-      $firebase(ref.chat.child( friends.chatId(user.$id, friend.$id) )).$asArray().$add({
+      $firebase(ref.chats.child( friends.chatId(user.$id, friend.$id) )).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,
         uid: user.$id

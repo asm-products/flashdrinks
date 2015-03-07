@@ -31,7 +31,7 @@ angular.module('app.directives', [])
       element.parent().parent().parent().parent().parent().find('ion-footer-bar').addClass('bar-stable item-input-inset').append($compile(tpl)(scope));
 
       var user = Auth.getUser();
-      scope.chats = $firebase(ref.chat.child( chatId(scope.chatId) )).$asArray();
+      scope.chats = $firebase(ref.chats.child( chatId(scope.chatId) )).$asArray();
       scope.getProfile = function (uid) {
         return $firebase(ref.users.child(uid)).$asObject();
       }
