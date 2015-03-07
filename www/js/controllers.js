@@ -30,17 +30,18 @@ angular.module('app.controllers', [])
   }
 })
 
-.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, $window){
+.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, $timeout, Auth){
   $scope.data = {
-    selectedContacts : []
+    //FIXME this isn't available if you start from bar-show for some reason
+    selectedContacts : _.map($scope.user.friends, function(v,k){
+      return $scope.getProfile(k);
+    })
   };
-
   $scope.pickContact = function() {
     ContactsService.pickContact().then(
       function(contact) {
+        contact.selected = true;
         $scope.data.selectedContacts.push(contact);
-        console.log("Selected contacts=");
-        console.log($scope.data.selectedContacts);
       },
       function(failure) {
         //$scope.data.selectedContacts.push({phones:[{type:'work', value:'805-975-5236'}], displayName: "Contacts not available (sample user)", emails:[{type:'sample',value:'sample@user.com'}]});
@@ -49,26 +50,17 @@ angular.module('app.controllers', [])
     );
   }
 
-  $scope.sendSMS = function(contacts, bar){
-    var nums = _.transform(contacts, function(m,v){
-      if (v.phones[0]) m.push(v.phones[0].value);
-    }, []);
-    var options = {
-      replaceLineBreaks: false, // true to replace \n by a new line, false by default
-      android: {
-        intent: 'INTENT'  // send SMS with the native android SMS messaging
-        //intent: '' // send SMS without open any other app
+  $scope.sendInvites = function(contacts, bar){
+    var phoneContacts = [];
+    _.each(contacts, function(c){
+      if (c.phones) {
+        phoneContacts.push(c);
+      } else {
+        ref.users.child(c.$id+'/notifs/invites/'+bar.id).set(true);
       }
-    };
-    var message = "Come to the bar with me tonight! Deets at https://flashdrink.firebaseapp.com/#/tab/bars/"+bar.id;
-    console.log(message);
-    $window.sms.send(nums, message, options, function(){
-      console.log('message sent successfully');
-      $scope.data.selectedContacts = [];
-      $scope.modal.hide();
-    }, function(err){
-      console.log(err);
-    });
+    })
+    ContactsService.sendSMS(phoneContacts, bar);
+    $scope.closeModal();
   }
 
   // ---- MODAL ----

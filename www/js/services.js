@@ -146,7 +146,7 @@ angular.module('app.services', [])
   return friends;
 })
 
-.service("ContactsService", ['$q', function($q) {
+.service("ContactsService", ['$q', function($q, $window) {
     var formatContact = function(contact) {
       return {
         "displayName"   : contact.name.formatted || contact.name.givenName + " " + contact.name.familyName || "Mystery Person",
@@ -168,7 +168,30 @@ angular.module('app.services', [])
       return deferred.promise;
     };
 
+    var sendSMS = function(contacts, bar){
+      if (_.size(contacts)<1) return;
+      var nums = _.transform(contacts, function(m,v){
+        if (v.phones[0]) m.push(v.phones[0].value);
+      }, []);
+      var options = {
+        replaceLineBreaks: false, // true to replace \n by a new line, false by default
+        android: {
+          intent: 'INTENT'  // send SMS with the native android SMS messaging
+          //intent: '' // send SMS without open any other app
+        }
+      };
+      var message = "Come to the bar with me tonight! Deets at https://flashdrink.firebaseapp.com/#/tab/bars/"+bar.id;
+      $window.sms.send(nums, message, options, function(){
+        console.log('message sent successfully');
+        $scope.data.selectedContacts = [];
+        $scope.modal.hide();
+      }, function(err){
+        console.log(err);
+      });
+    }
+
     return {
-      pickContact : pickContact
+      pickContact : pickContact,
+      sendSMS: sendSMS
     };
   }])
