@@ -17,17 +17,16 @@ angular.module('app.controllers', [])
   $scope.refresh(false);
 })
 
-.controller('BarShowCtrl', function($scope, $stateParams, Bars, bar) {
+.controller('BarShowCtrl', function($scope, $stateParams, Bars, bar, ref) {
   $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
   $scope.data = {
     text: '',
     showMembers: false
   }
-  $scope.chat = function(){
-    Bars.chat($scope.user, $scope.bar, $scope.data.text);
-    $scope.data.text = '';
-  }
+  // clear notifications when they click into a bar
+  ref.users.child($scope.user.$id + '/notifs/chats/' + bar.id).remove();
+  ref.users.child($scope.user.$id + '/notifs/members/' + bar.id).remove();
 })
 
 .controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, $timeout, Auth){
@@ -92,6 +91,7 @@ angular.module('app.controllers', [])
 
 .controller('FriendListCtrl', function($scope, Friends) {
   //$scope.friends = Friends.all();
+  $scope.chatId = Friends.chatId;
 })
 
 .controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
@@ -105,7 +105,7 @@ angular.module('app.controllers', [])
     Friends.chat($scope.user, $scope.friend, $scope.data.text);
     $scope.data.text = '';
   }
-
+  ref.users.child($scope.user.$id + '/notifs/chats/' + chatId).remove();
 })
 
 .controller('AccountCtrl', function($scope, Auth) {

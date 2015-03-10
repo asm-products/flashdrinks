@@ -23,7 +23,21 @@
           {{::bar.snippet_text}}<br/>
           <span>{{::bar.distance*0.000621371192 | number:2}} miles away</span>
         </p>
-        <span class="badge badge-assertive">{{bar.sync.count}}</span>
+
+        <div class="icon multi-icon">
+          <span class="badge badge-assertive" ng-if="user.notifs.invites[bar.id]">
+            <i class="ion-beer"></i>
+          </span>
+          <span class="badge" ng-if="bar.sync.count>0" ng-class="{'badge-assertive': user.notifs.members[bar.id]}">
+            {{bar.sync.count}}
+            <i class="ion-person-stalker"></i>
+          </span>
+          <span class="badge" ng-if="bar.chats.length>0" ng-class="{'badge-assertive': user.notifs.chats[bar.id]}">
+            {{bar.chats.length}}
+            <i class="ion-chatbubbles"></i>
+          </span>
+        </div>
+
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>

@@ -28,6 +28,7 @@ angular.module('app.services', [])
         deferred.resolve(results);
         _.each(results, function (bar) {
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
+          bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
         })
       }).error(deferred.reject);
 
@@ -54,6 +55,9 @@ angular.module('app.services', [])
       bar.sync.count += (bar.sync.members[user.$id] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
       bar.sync.$save();
+      _.each(bar.sync.members, function(v,k){
+        ref.users.child(k+'/notifs/members/'+bar.id).set(true);
+      })
     }
   }
 })
