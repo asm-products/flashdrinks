@@ -5,7 +5,7 @@
 describe('controllers', function(){
   beforeEach(function() {
     module('mock.firebase');
-    module('myApp.controllers');
+    module('app.controllers');
   });
 
   describe('HomeCtrl', function() {

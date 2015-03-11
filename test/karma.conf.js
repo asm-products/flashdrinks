@@ -4,13 +4,18 @@ module.exports = function(config){
     basePath : '../',
 
     files : [
-      'app/bower_components/angular/angular.js',
-      'app/bower_components/angular-route/angular-route.js',
-      'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/bower_components/mockfirebase/browser/mockfirebase.js',
-      'app/bower_components/angularfire/dist/angularfire.js',
+      'www/lib/ionic/js/ionic.bundle.js',
+      'www/lib/lodash/lodash.js',
+      'www/lib/firebase/firebase.js',
+      'www/lib/angularfire/dist/angularfire.js',
+      'www/lib/angular-filter/dist/angular-filter.js',
+      'www/lib/crypto-js/build/rollups/md5.js',
+
+      'www/lib/angular-mocks/angular-mocks.js',
+      'www/lib/mockfirebase/browser/mockfirebase.js',
+
       'test/lib/**/*.js',
-      'app/js/**/*.js',
+      'www/js/**/*.js',
       'test/unit/**/*.spec.js'
     ],
 
@@ -22,15 +27,15 @@ module.exports = function(config){
 
     plugins : [
             'karma-chrome-launcher',
-            'karma-firefox-launcher',
+            //'karma-firefox-launcher',
             'karma-jasmine',
-            'karma-junit-reporter'
+            //'karma-junit-reporter'
             ],
 
-    junitReporter : {
-      outputFile: 'test_out/unit.xml',
-      suite: 'unit'
-    }
+    //junitReporter : {
+    //  outputFile: 'test_out/unit.xml',
+    //  suite: 'unit'
+    //}
 
   });
 };
