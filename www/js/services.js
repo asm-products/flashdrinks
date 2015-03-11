@@ -1,7 +1,7 @@
 angular.module('app.services', [])
 
-.factory('ref', function($window){
-  var root = new $window.Firebase("https://flashdrink.firebaseio.com")
+.factory('ref', function($window, FBURL){
+  var root = new $window.Firebase(FBURL)
   var ref = {
     root: root,
     users: root.child('users'),
@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, YELPPROXY) {
   var deferred;
   var refreshBars = function(){
     deferred = $q.defer();
@@ -23,7 +23,7 @@ angular.module('app.services', [])
         ll: position.coords.latitude + ',' + position.coords.longitude
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-      $http.get('https://lefnire-server-misc.herokuapp.com/yelp-search', {params: params}).success(function(results){
+      $http.get(YELPPROXY+'/yelp-search', {params: params}).success(function(results){
         results = results.businesses;
         deferred.resolve(results);
         _.each(results, function (bar) {
@@ -184,7 +184,7 @@ angular.module('app.services', [])
           //intent: '' // send SMS without open any other app
         }
       };
-      var message = "Come to the bar with me tonight! Deets at https://flashdrink.firebaseapp.com/#/tab/bars/"+bar.id;
+      var message = "Come to the bar with me tonight! Deets at "+FBURL+"/#/tab/bars/"+bar.id;
       $window.sms.send(nums, message, options, function(){
         console.log('message sent successfully');
         $scope.data.selectedContacts = [];

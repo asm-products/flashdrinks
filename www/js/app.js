@@ -1,4 +1,12 @@
-angular.module('app', ['ionic', 'app.controllers', 'app.services', 'app.directives', 'firebase', 'angular.filter'])
+angular.module('app', [
+  'ionic',
+  'firebase',
+  'angular.filter',
+  'app.config',
+  'app.controllers',
+  'app.services',
+  'app.directives'
+])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
