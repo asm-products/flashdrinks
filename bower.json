@@ -9,5 +9,9 @@
     "css-social-buttons": "git@github.com:samcollins/css-social-buttons.git",
     "crypto-js": "https://github.com/evanvosberg/crypto-js.git#~3.1.2",
     "ionic": "driftyco/ionic-bower#master"
+  },
+  "devDependencies": {
+    "mockfirebase": "~0.10.2",
+    "angular-mocks": "~1.3.14"
   }
 }
