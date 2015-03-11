@@ -1,6 +1,14 @@
 <div class="item item-divider">
   Chat
 </div>
+
+<div class="item item-input-inset">
+  <label class="item-input-wrapper">
+    <input type="text" placeholder="Type your message" ng-model="data.text" />
+  </label>
+  <button ng-click="send()" class="button button-small button-icon icon ion-android-send footer-btn" ng-disabled="!data.text" />
+</div>
+
 <div class="item" ng-if="chats.length<1">
   No messages, be the first to say something.
 </div>
