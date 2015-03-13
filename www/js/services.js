@@ -120,6 +120,10 @@ angular.module('app.services', [])
 
 .factory('Friends', function($firebase, ref, Auth){
   var friends = {
+    PENDING: 1,
+    APPROVED: 0,
+    DENIED: -1,
+
     all: function(){
       var u = Auth.getUser();
       if (!u.friends) {
@@ -134,10 +138,27 @@ angular.module('app.services', [])
     favorite: function(friend) {
       var fid = friend.$id,
         uid = Auth.getUser().$id;
-      if (friends.all()[fid]){
+      if (friend.friends && friend.friends[uid] != friends.APPROVED)
+        return alert("You already sent a friend request");
+      if (angular.isDefined(friends.all()[fid])){
+        if (!confirm('Remove friend?')) return;
         ref.users.child(uid).child('friends').child(fid).remove();
+        ref.users.child(fid).child('friends').child(uid).remove();
       } else {
-        ref.users.child(uid).child('friends').child(fid).set(true);
+        ref.users.child(fid).child('friends').child(uid).set(friends.PENDING);
+      }
+    },
+    approve: function(friend, approval){
+      var fid = friend.$id,
+        uid = Auth.getUser().$id;
+      switch (approval) {
+        case friends.APPROVED:
+          ref.users.child(uid).child('friends').child(fid).set(friends.APPROVED);
+          ref.users.child(fid).child('friends').child(uid).set(friends.APPROVED);
+          break;
+        case friends.DENIED:
+          ref.users.child(uid).child('friends').child(fid).set(friends.DENIED);
+          break;
       }
     },
     chatId: function(userId, friendId) {

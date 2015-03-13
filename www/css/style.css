@@ -3,3 +3,10 @@
 .multi-icon .badge {
   position: relative;
 }
+
+.denied-request {
+  opacity: .5;
+}
+.denied-request h2 {
+  color:red;
+}

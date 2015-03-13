@@ -91,10 +91,13 @@ angular.module('app.controllers', [])
 
 .controller('FriendListCtrl', function($scope, Friends) {
   //$scope.friends = Friends.all();
+  $scope.Friends = Friends;
   $scope.chatId = Friends.chatId;
+  $scope.approve = Friends.approve;
 })
 
 .controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
+  $scope.Friends = Friends;
   $scope.friend = Friends.get($stateParams.friendId);
   $scope.favorite = Friends.favorite;
   var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);

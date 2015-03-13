@@ -2,7 +2,11 @@
 
   <!--Header-->
   <ion-nav-buttons side="right">
-    <button class="button icon" ng-class="{'ion-ios7-heart-outline': !user.friends[friend.$id], 'ion-ios7-heart': user.friends[friend.$id]}" ng-click="favorite(friend)"></button>
+    <button
+      class="button icon"
+      ng-class="{'ion-ios-star-outline': user.friends[friend.$id]!==Friends.APPROVED, 'ion-ios-star': user.friends[friend.$id]===Friends.APPROVED}"
+      ng-click="favorite(friend)">
+    </button>
   </ion-nav-buttons>
 
   <!--Content-->
@@ -12,7 +16,7 @@
         <img ng-src="{{friend.picture}}">
         <h3>{{friend.name}}</h3>
       </div>
-      <chat-list chat-id="[user.$id, friend.$id]"></chat-list>
+      <chat-list chat-id="[user.$id, friend.$id]" ng-if="user.friends[friend.$id]===Friends.APPROVED"></chat-list>
     </div>
   </ion-content>
 
