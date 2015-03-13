@@ -8,7 +8,8 @@
     "angular-filter": "~0.5.4",
     "css-social-buttons": "git@github.com:samcollins/css-social-buttons.git",
     "crypto-js": "https://github.com/evanvosberg/crypto-js.git#~3.1.2",
-    "ionic": "driftyco/ionic-bower#master"
+    "ionic": "driftyco/ionic-bower#master",
+    "moment": "~2.9.0"
   },
   "devDependencies": {
     "mockfirebase": "~0.10.2",

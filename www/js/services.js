@@ -27,8 +27,11 @@ angular.module('app.services', [])
         results = results.businesses;
         deferred.resolve(results);
         _.each(results, function (bar) {
-          bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
           bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
+          bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
+          // If the last person to RSVP was before 4am, reset the RSVPs
+          var lastIn = moment(bar.sync.lastIn);
+          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) bar.sync.$remove('members');
         })
       }).error(deferred.reject);
 
@@ -54,6 +57,7 @@ angular.module('app.services', [])
       bar.sync.members[user.$id] = !bar.sync.members[user.$id];
       bar.sync.count += (bar.sync.members[user.$id] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
+      bar.sync.lastIn = +new Date; //Firebase.ServerValue.TIMESTAMP; // used to later reset on the next day
       bar.sync.$save();
       _.each(bar.sync.members, function(v,k){
         ref.users.child(k+'/notifs/members/'+bar.id).set(true);

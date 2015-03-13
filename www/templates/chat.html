@@ -16,4 +16,10 @@
   <img ng-src='{{profile.picture}}' ui-sref="app.friend-show({friendId:profile.$id})" />
   <h2>{{profile.name}}</h2>
   <p>{{::chat.text}}</p>
+  <p>
+    <a class="subdued">
+      <i class="ion-clock"></i>
+      &nbsp;{{chat.timestamp | date:'short'}}
+    </a>
+  </p>
 </ion-item>
