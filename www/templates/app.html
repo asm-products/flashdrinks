@@ -22,13 +22,15 @@
         <!--<ion-item nav-clear menu-close ng-click="login()">-->
           <!--Login-->
         <!--</ion-item>-->
-        <ion-item nav-clear menu-close href="#/app/bars" class="item-icon-left">
+        <ion-item nav-clear menu-close href="#/app/bars" class="item-icon-left item-icon-right">
           Bars
           <i class="icon ion-beer"></i>
+          <span class="badge badge-assertive" ng-show="user.notifs.chats || user.notifs.members">1</span>
         </ion-item>
-        <ion-item nav-clear menu-close href="#/app/friends" class="item-icon-left">
+        <ion-item nav-clear menu-close href="#/app/friends" class="item-icon-left item-icon-right">
           Friends
           <i class="icon ion-person-stalker"></i>
+          <span class="badge badge-assertive" ng-show="user.notifs.friends">1</span>
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/account" class="item-icon-left">
           Account

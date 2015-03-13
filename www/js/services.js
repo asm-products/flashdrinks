@@ -60,7 +60,12 @@ angular.module('app.services', [])
       bar.sync.lastIn = +new Date; //Firebase.ServerValue.TIMESTAMP; // used to later reset on the next day
       bar.sync.$save();
       _.each(bar.sync.members, function(v,k){
+        if (k==user.$id) return;
         ref.users.child(k+'/notifs/members/'+bar.id).set(true);
+      })
+      _.each(user.friends, function(v,k){
+        if (v==0) //FIXME use Friends.APPROVED
+          ref.users.child(k+'/notifs/members/'+bar.id).set(true);
       })
     }
   }
@@ -142,10 +147,11 @@ angular.module('app.services', [])
         return alert("You already sent a friend request");
       if (angular.isDefined(friends.all()[fid])){
         if (!confirm('Remove friend?')) return;
-        ref.users.child(uid).child('friends').child(fid).remove();
-        ref.users.child(fid).child('friends').child(uid).remove();
+        ref.users.child(uid+'/friends/'+fid).remove();
+        ref.users.child(fid+'/friends/'+uid).remove();
       } else {
-        ref.users.child(fid).child('friends').child(uid).set(friends.PENDING);
+        ref.users.child(fid+'/friends/'+uid).set(friends.PENDING);
+        ref.users.child(fid+'/notifs/friends').set(true);
       }
     },
     approve: function(friend, approval){

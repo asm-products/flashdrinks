@@ -89,11 +89,12 @@ angular.module('app.controllers', [])
   });
 })
 
-.controller('FriendListCtrl', function($scope, Friends) {
+.controller('FriendListCtrl', function($scope, Friends, ref) {
   //$scope.friends = Friends.all();
   $scope.Friends = Friends;
   $scope.chatId = Friends.chatId;
   $scope.approve = Friends.approve;
+  ref.users.child($scope.user.$id+'/notifs/friends').remove(); // remove any new friend notfis on visiting friends
 })
 
 .controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {

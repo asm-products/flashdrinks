@@ -42,6 +42,7 @@ angular.module('app.directives', [])
         if (scope.type=='bar') {
           ref.bars.child(cid+'/members').once('value', function(members){
             _.each(_.unique(_.pluck(scope.chats, 'uid')).concat(_.keys(members.val())), function(uid){
+              if (k==user.$id) return;
               ref.users.child(uid + '/notifs/chats/' + cid).set(true);
             });
           })
