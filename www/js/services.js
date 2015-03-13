@@ -142,8 +142,9 @@ angular.module('app.services', [])
     },
     favorite: function(friend) {
       var fid = friend.$id,
-        uid = Auth.getUser().$id;
-      if (friend.friends && friend.friends[uid] != friends.APPROVED)
+        uid = Auth.getUser().$id,
+        request = friend.friends && friend.friends[uid];
+      if (request === friends.DENIED || request === friends.PENDING)
         return alert("You already sent a friend request");
       if (angular.isDefined(friends.all()[fid])){
         if (!confirm('Remove friend?')) return;
