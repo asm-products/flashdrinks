@@ -77,6 +77,7 @@ angular.module('app.services', [])
       var authFields = _.pick(authData, ['uid', 'provider', 'facebook']);
       authFields.facebook = _.pick(authData.facebook, ['cachedUserProfile', 'displayName', 'email', 'id']);
 
+      // FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-storing
       $firebase(ref.users.child(authData.uid)).$update({
         picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png',
         name: authData.facebook && authData.facebook.displayName || authData.uid,
@@ -107,6 +108,7 @@ angular.module('app.services', [])
       return Auth._user;
     },
     facebook: function(){
+      //FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-popups
       if (Auth._user.facebook) return Auth._user;
       var authData = authObj.$authWithOAuthPopup("facebook").then(function(){
         Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
