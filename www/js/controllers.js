@@ -26,7 +26,7 @@ angular.module('app.controllers', [])
   }
   // clear notifications when they click into a bar
   var notifs = ref.users.child($scope.user.$id + '/notifs');
-  notifs.child('/chats/'+bar.id).remove();
+  notifs.child('/chats/bars/'+bar.id).remove();
   notifs.child('/rsvps/'+bar.id).remove();
 })
 
@@ -109,7 +109,7 @@ angular.module('app.controllers', [])
     Friends.chat($scope.user, $scope.friend, $scope.data.text);
     $scope.data.text = '';
   }
-  ref.users.child($scope.user.$id + '/notifs/chats/' + chatId).remove();
+  ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
 })
 
 .controller('AccountCtrl', function($scope, Auth) {

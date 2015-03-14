@@ -23,6 +23,7 @@ angular.module('app.directives', [])
       user = Auth.getUser();
       cid = chatId(scope.chatId);
       scope.chats = $firebase(ref.chats.child(cid)).$asArray();
+      scope.Friends = Friends;
 
       scope.data = {
         text: ''
@@ -40,12 +41,12 @@ angular.module('app.directives', [])
           ref.bars.child(cid+'/rsvps').once('value', function(rsvps){
             _.each(_.unique(_.pluck(scope.chats, 'uid')).concat(_.keys(rsvps.val())), function(k){
               if (k==user.$id) return;
-              ref.users.child(k + '/notifs/chats/' + cid).set(true);
+              ref.users.child(k + '/notifs/chats/bars/' + cid).set(true);
             });
           })
         } else { // user
           fid = scope.chatId[1];
-          ref.users.child(fid + '/notifs/chats/'+cid).set(true);
+          ref.users.child(fid + '/notifs/chats/friends/'+cid).set(true);
         }
       }
     }
