@@ -84,11 +84,13 @@ angular.module('app.services', [])
       authFields.facebook = _.pick(authData.facebook, ['cachedUserProfile', 'displayName', 'email', 'id']);
 
       // FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-storing
-      $firebase(ref.users.child(authData.uid)).$update({
+      ref.users.child(authData.uid).update({
         picture: authData.facebook && authData.facebook.cachedUserProfile.picture.data.url || 'img/anon.png',
         name: authData.facebook && authData.facebook.displayName || authData.uid,
-        auth: authFields
+        provider: authData.provider
       })
+      // store authData in auths collection. Don't need now, but may in case of "find friends" feature, listserve, etc.
+      ref.root.child('auths/'+authData.uid).set(authFields);
 
       // Track users on auth, see https://assembly.com/flashdrinks/metrics/snippet
       ;(function(p,l,o,w,i){if(!p[i]){p.__asml=p.__asml||[];

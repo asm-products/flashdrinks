@@ -3,8 +3,8 @@
     <div class="list">
 
       <div class="item">
-        <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="!user.auth.facebook.id">Login or Register</button>
-        <div ng-if="user.auth.facebook.id">Logged in as {{user.name}}</div>
+        <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="user.provider!='facebook'">Login or Register</button>
+        <div ng-if="user.provider=='facebook'">Logged in as {{user.name}}</div>
       </div>
 
       <div class="item item-input item-stacked-label">

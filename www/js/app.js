@@ -40,7 +40,6 @@ angular.module('app', [
     abstract: true,
     templateUrl: "templates/app.html",
     controller: function($scope, Auth, Friends){
-      Firebase.enableLogging(true, true);
       $scope.user = Auth.getUser();
       $scope.android = ionic.Platform.platform() == 'android';
       $scope.Friends = Friends;
