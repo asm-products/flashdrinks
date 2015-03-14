@@ -39,14 +39,11 @@ angular.module('app', [
     url: "/app",
     abstract: true,
     templateUrl: "templates/app.html",
-    controller: function($scope, Auth, $firebase, ref){
+    controller: function($scope, Auth, Friends){
+      Firebase.enableLogging(true, true);
       $scope.user = Auth.getUser();
-      $scope.$firebase = $firebase;
-      $scope.ref = ref;
       $scope.android = ionic.Platform.platform() == 'android';
-      $scope.getProfile = function(uid){
-        return $firebase(ref.users.child(uid)).$asObject()
-      }
+      $scope.Friends = Friends;
     }
   })
 

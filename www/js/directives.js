@@ -1,6 +1,6 @@
 angular.module('app.directives', [])
 
-.directive('chatList', function (ref, Auth, $firebase) {
+.directive('chatList', function (ref, Auth, $firebase, Friends) {
 
   // For basic cases of /firebase/chats/bar-1, chatId will be a string (bar-1). For cases of two or more users chatting,
   // we want a unique id combining the two users into a chatroom - so we concat their userIds. To ensure it turns out the
@@ -23,9 +23,6 @@ angular.module('app.directives', [])
       user = Auth.getUser();
       cid = chatId(scope.chatId);
       scope.chats = $firebase(ref.chats.child(cid)).$asArray();
-      scope.getProfile = function (uid) {
-        return $firebase(ref.users.child(uid)).$asObject();
-      }
 
       scope.data = {
         text: ''
@@ -43,7 +40,7 @@ angular.module('app.directives', [])
           ref.bars.child(cid+'/rsvps').once('value', function(rsvps){
             _.each(_.unique(_.pluck(scope.chats, 'uid')).concat(_.keys(rsvps.val())), function(k){
               if (k==user.$id) return;
-              ref.users.child(uid + '/notifs/chats/' + cid).set(true);
+              ref.users.child(k + '/notifs/chats/' + cid).set(true);
             });
           })
         } else { // user

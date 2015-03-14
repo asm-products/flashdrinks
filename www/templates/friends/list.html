@@ -5,7 +5,7 @@
         class="item-thumbnail-left item-icon-right"
         ng-class="{'denied-request': user.friends[k]==Friends.DENIED}"
         ng-repeat="(k,v) in user.friends"
-        ng-init="friend=$firebase(ref.users.child(k)).$asObject()"
+        ng-init="friend=Friends.get(k)"
         type="item-text-wrap"
         href="#/app/friends/{{::friend.$id}}">
 

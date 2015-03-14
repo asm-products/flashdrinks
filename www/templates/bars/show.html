@@ -25,7 +25,7 @@
         {{bar.sync.count}} are people coming
         <i class="icon icon-accessory" ng-class="{'ion-chevron-right':!data.show_rsvps, 'ion-chevron-up':data.show_rsvps}"></i>
         <ion-list ng-if="data.show_rsvps">
-          <ion-item class="item-avatar" ng-repeat="(uid,v) in bar.sync.rsvps" href="#/app/friends/{{::profile.$id}}" ng-init="profile=getProfile(uid)">
+          <ion-item class="item-avatar" ng-repeat="(uid,v) in bar.sync.rsvps" href="#/app/friends/{{::profile.$id}}" ng-init="profile=Friends.get(uid)">
             <img ng-src="{{::profile.picture}}" />
             <h2>{{::profile.name}}</h2>
           </ion-item>

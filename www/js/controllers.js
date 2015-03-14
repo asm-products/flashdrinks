@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('BarListCtrl', function($scope, Bars, $ionicLoading, $timeout) {
+.controller('BarListCtrl', function($scope, Bars, $ionicLoading) {
   $scope.data = {
     searching:false
   };
@@ -25,15 +25,16 @@ angular.module('app.controllers', [])
     show_rsvps: false
   }
   // clear notifications when they click into a bar
-  ref.users.child($scope.user.$id + '/notifs/chats/' + bar.id).remove();
-  ref.users.child($scope.user.$id + '/notifs/rsvps/' + bar.id).remove();
+  var notifs = ref.users.child($scope.user.$id + '/notifs');
+  notifs.child('/chats/'+bar.id).remove();
+  notifs.child('/rsvps/'+bar.id).remove();
 })
 
-.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, $timeout, Auth){
+.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, Friends){
   $scope.data = {
     //FIXME this isn't available if you start from bar-show for some reason
     selectedContacts : _.map($scope.user.friends, function(v,k){
-      return $scope.getProfile(k);
+      return Friends.get(k);
     })
   };
   $scope.pickContact = function() {
@@ -63,6 +64,7 @@ angular.module('app.controllers', [])
   }
 
   // ---- MODAL ----
+  // TODO refactor this out somewhere, this is ugly. Boilerplate from Ionic samples, is all this really necessary?
   $ionicModal.fromTemplateUrl('templates/friends/invite.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -91,14 +93,12 @@ angular.module('app.controllers', [])
 
 .controller('FriendListCtrl', function($scope, Friends, ref) {
   //$scope.friends = Friends.all();
-  $scope.Friends = Friends;
   $scope.chatId = Friends.chatId;
   $scope.approve = Friends.approve;
   ref.users.child($scope.user.$id+'/notifs/friends').remove(); // remove any new friend notfis on visiting friends
 })
 
 .controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
-  $scope.Friends = Friends;
   $scope.friend = Friends.get($stateParams.friendId);
   $scope.favorite = Friends.favorite;
   var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);

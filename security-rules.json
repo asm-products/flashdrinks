@@ -3,22 +3,12 @@
 
     // TODO make sure this is rock solid!
     "users": {
+      ".read": true,
       "$uid": {
-        "auth": {
-          ".read": "auth.uid == $uid",
-          ".write": "auth.uid == $uid"
-        },
-        "name": {
-          ".read": true,
-          ".write": "auth.uid == $uid"
-        },
-        "picture": {
-          ".read": true,
-          ".write": "auth.uid == $uid"
-        },
+        "name": {".write": "auth.uid == $uid"},
+        "picture": {".write": "auth.uid == $uid"},
         "friends": {
           "$fid": {
-            ".read": true,
             ".write": "auth.uid == $uid || auth.uid == $fid"
           }
         }

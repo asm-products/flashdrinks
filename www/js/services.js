@@ -6,7 +6,7 @@ angular.module('app.services', [])
     root: root,
     users: root.child('users'),
     bars: root.child('bars'),
-    chats: root.child('chats'),
+    chats: root.child('chats')
   }
   return ref;
 
@@ -52,6 +52,7 @@ angular.module('app.services', [])
     rsvp: function(bar){
       // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
       // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
+      // TODO extend service for defaults https://www.firebase.com/docs/web/libraries/angular/guide/extending-services.html#section-firebaseobject
       _.defaults(bar.sync, {rsvps:{}, count:0});
       var user = Auth.getUser();
       bar.sync.rsvps[user.$id] = !bar.sync.rsvps[user.$id];
@@ -71,7 +72,7 @@ angular.module('app.services', [])
   }
 })
 
-.factory('Auth', function($q, ref, $firebase, $firebaseAuth){
+.factory('Auth', function($q, ref, $firebase, $firebaseAuth, $rootScope){
   var authObj = $firebaseAuth(ref.root);
 
   // When we register a new user, save it to /users collection too. We need users
@@ -117,6 +118,8 @@ angular.module('app.services', [])
       if (Auth._user.facebook) return Auth._user;
       var authData = authObj.$authWithOAuthPopup("facebook").then(function(){
         Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
+        $rootScope._user = Auth._user;
+        $rootScope.$apply();
       });
     }
   }
@@ -160,11 +163,11 @@ angular.module('app.services', [])
         uid = Auth.getUser().$id;
       switch (approval) {
         case friends.APPROVED:
-          ref.users.child(uid).child('friends').child(fid).set(friends.APPROVED);
-          ref.users.child(fid).child('friends').child(uid).set(friends.APPROVED);
+          ref.users.child(uid+'/friends/'+fid).set(friends.APPROVED);
+          ref.users.child(fid+'/friends/'+uid).set(friends.APPROVED);
           break;
         case friends.DENIED:
-          ref.users.child(uid).child('friends').child(fid).set(friends.DENIED);
+          ref.users.child(uid+'/friends/'+fid).set(friends.DENIED);
           break;
       }
     },
