@@ -12,7 +12,7 @@
 <div class="item" ng-if="chats.length<1">
   No messages, be the first to say something.
 </div>
-<ion-item class="item-avatar item-text-wrap" ng-repeat="chat in chats | toArray | orderBy:'-timestamp'" ng-init="profile=getProfile(chat.uid)">
+<ion-item class="item-avatar item-text-wrap" ng-repeat="chat in chats | toArray | orderBy:'-timestamp'" ng-init="profile=getProfile(chat.user)">
   <img ng-src='{{profile.picture}}' ui-sref="app.friend-show({friendId:profile.$id})" />
   <h2>{{profile.name}}</h2>
   <p>{{::chat.text}}</p>

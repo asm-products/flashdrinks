@@ -15,17 +15,17 @@
       </div>
 
       <div class="item item-button-right">
-        {{bar.sync.members[user.$id] ? "You are joining tonight" : "You are not joining tonight"}}
-        <button class="button button-small" ng-class="{'button-assertive': bar.sync.members[user.$id], 'button-balanced': !bar.sync.members[user.$id]}" ng-click="Bars.opt(bar)">
-          {{bar.sync.members[user.$id] ? "Leave" : "Join"}}
+        {{bar.sync.rsvps[user.$id] ? "You are joining tonight" : "You are not joining tonight"}}
+        <button class="button button-small" ng-class="{'button-assertive': bar.sync.rsvps[user.$id], 'button-balanced': !bar.sync.rsvps[user.$id]}" ng-click="Bars.rsvp(bar)">
+          {{bar.sync.rsvps[user.$id] ? "Leave" : "Join"}}
         </button>
       </div>
 
-      <div class="item item-icon-right" ng-if="bar.sync.count>0" ng-click="data.showMembers=!data.showMembers">
-        {{bar.sync.count}} are people coming
-        <i class="icon icon-accessory" ng-class="{'ion-chevron-right':!data.showMembers, 'ion-chevron-up':data.showMembers}"></i>
-        <ion-list ng-if="data.showMembers">
-          <ion-item class="item-avatar" ng-repeat="(uid,member) in bar.sync.members" href="#/app/friends/{{::profile.$id}}" ng-init="profile=getProfile(uid)">
+      <div class="item item-icon-right" ng-if="(bar.sync.rsvps|size)>0" ng-click="data.show_rsvps=!data.show_rsvps">
+        {{bar.sync.rsvps | size}} are people coming
+        <i class="icon icon-accessory" ng-class="{'ion-chevron-right':!data.show_rsvps, 'ion-chevron-up':data.show_rsvps}"></i>
+        <ion-list ng-if="data.show_rsvps">
+          <ion-item class="item-avatar" ng-repeat="(uid,v) in bar.sync.rsvps" href="#/app/friends/{{::profile.$id}}" ng-init="profile=getProfile(uid)">
             <img ng-src="{{::profile.picture}}" />
             <h2>{{::profile.name}}</h2>
           </ion-item>

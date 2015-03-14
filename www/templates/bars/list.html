@@ -28,8 +28,8 @@
           <span class="badge badge-assertive" ng-if="user.notifs.invites[bar.id]">
             <i class="ion-beer"></i>
           </span>
-          <span class="badge" ng-if="bar.sync.count>0" ng-class="{'badge-assertive': user.notifs.members[bar.id]}">
-            {{bar.sync.count}}
+          <span class="badge" ng-if="(bar.sync.rsvps|size)>0" ng-class="{'badge-assertive': user.notifs.rsvps[bar.id]}">
+            {{bar.sync.rsvps | size}}
             <i class="ion-person-stalker"></i>
           </span>
           <span class="badge" ng-if="bar.chats.length>0" ng-class="{'badge-assertive': user.notifs.chats[bar.id]}">

@@ -35,13 +35,13 @@ angular.module('app.directives', [])
         scope.chats.$add({
           timestamp: Firebase.ServerValue.TIMESTAMP,
           text: scope.data.text,
-          uid: user.$id
+          user: user.$id
         });
         scope.data.text = '';
 
         if (scope.type=='bar') {
-          ref.bars.child(cid+'/members').once('value', function(members){
-            _.each(_.unique(_.pluck(scope.chats, 'uid')).concat(_.keys(members.val())), function(uid){
+          ref.bars.child(cid+'/rsvps').once('value', function(rsvps){
+            _.each(_.unique(_.pluck(scope.chats, 'uid')).concat(_.keys(rsvps.val())), function(k){
               if (k==user.$id) return;
               ref.users.child(uid + '/notifs/chats/' + cid).set(true);
             });

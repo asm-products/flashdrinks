@@ -31,7 +31,7 @@ angular.module('app.services', [])
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
           // If the last person to RSVP was before 4am, reset the RSVPs
           var lastIn = moment(bar.sync.lastIn);
-          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) bar.sync.$remove('members');
+          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) bar.sync.$remove('rsvps');
         })
       }).error(deferred.reject);
 
@@ -49,23 +49,22 @@ angular.module('app.services', [])
         return _.find(bars, {id:barId});
       });
     },
-    opt: function(bar){
+    rsvp: function(bar){
       // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
       // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
-      _.defaults(bar.sync, {members:{}, count:0});
+      _.defaults(bar.sync, {rsvps:{}});
       var user = Auth.getUser();
-      bar.sync.members[user.$id] = !bar.sync.members[user.$id];
-      bar.sync.count += (bar.sync.members[user.$id] ? 1 : -1);
-      if (!bar.sync.count) delete bar.sync.count;
+      bar.sync.rsvps[user.$id] = !bar.sync.rsvps[user.$id];
+      //if (!_.size(bar.sync.rsvps)) delete bar.sync.rsvps;
       bar.sync.lastIn = +new Date; //Firebase.ServerValue.TIMESTAMP; // used to later reset on the next day
       bar.sync.$save();
-      _.each(bar.sync.members, function(v,k){
+      _.each(bar.sync.rsvps, function(v,k){
         if (k==user.$id) return;
-        ref.users.child(k+'/notifs/members/'+bar.id).set(true);
+        ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
       })
       _.each(user.friends, function(v,k){
         if (v==0) //FIXME use Friends.APPROVED
-          ref.users.child(k+'/notifs/members/'+bar.id).set(true);
+          ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
       })
     }
   }

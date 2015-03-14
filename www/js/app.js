@@ -1,7 +1,7 @@
 angular.module('app', [
   'ionic',
   'firebase',
-  'angular.filter',
+  'angular-lodash',
   'app.config',
   'app.controllers',
   'app.services',

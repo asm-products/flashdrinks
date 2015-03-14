@@ -22,11 +22,11 @@ angular.module('app.controllers', [])
   $scope.bar = bar; //in state.resolve, required for view title
   $scope.data = {
     text: '',
-    showMembers: false
+    show_rsvps: false
   }
   // clear notifications when they click into a bar
   ref.users.child($scope.user.$id + '/notifs/chats/' + bar.id).remove();
-  ref.users.child($scope.user.$id + '/notifs/members/' + bar.id).remove();
+  ref.users.child($scope.user.$id + '/notifs/rsvps/' + bar.id).remove();
 })
 
 .controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, $timeout, Auth){
