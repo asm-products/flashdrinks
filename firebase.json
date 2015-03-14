@@ -1,6 +1,7 @@
 {
   "firebase": "flashdrink",
   "public": "www",
+  "rules": "security-rules.json",
   "ignore": [
     "firebase.json",
     "**/.*",
