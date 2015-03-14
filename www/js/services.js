@@ -52,10 +52,11 @@ angular.module('app.services', [])
     rsvp: function(bar){
       // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
       // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
-      _.defaults(bar.sync, {rsvps:{}});
+      _.defaults(bar.sync, {rsvps:{}, count:0});
       var user = Auth.getUser();
       bar.sync.rsvps[user.$id] = !bar.sync.rsvps[user.$id];
-      //if (!_.size(bar.sync.rsvps)) delete bar.sync.rsvps;
+      bar.sync.count += (bar.sync.rsvps[user.$id] ? 1 : -1);
+      if (!bar.sync.count) delete bar.sync.count;
       bar.sync.lastIn = +new Date; //Firebase.ServerValue.TIMESTAMP; // used to later reset on the next day
       bar.sync.$save();
       _.each(bar.sync.rsvps, function(v,k){
