@@ -24,6 +24,10 @@ angular.module('app.controllers', [])
     text: '',
     show_rsvps: false
   }
+  $scope.favorite = function(bar){
+    //$scope.user.favoriteBars[bar.id] = !user.favoriteBars[bar.id];
+    ref.users.child($scope.user.$id+'/favoriteBars/'+bar.id).set(!$scope.user.favoriteBars[bar.id]);
+  }
   // clear notifications when they click into a bar
   var notifs = ref.users.child($scope.user.$id + '/notifs');
   notifs.child('/chats/bars/'+bar.id).remove();
