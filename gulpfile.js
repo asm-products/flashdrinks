@@ -7,6 +7,16 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var karma = require('karma').server;
+var templateCache = require('gulp-angular-templatecache');
+
+gulp.task('templatecache', function () {
+  gulp.src('www/templates/**/*.html')
+    .pipe(templateCache({
+      root: 'templates/',
+      module: 'app'
+    }))
+    .pipe(gulp.dest('www/js'));
+});
 
 var paths = {
   sass: ['./scss/**/*.scss']
