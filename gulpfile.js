@@ -23,12 +23,7 @@ var paths = {
     "./www/lib/angular-lodash/angular-lodash.js",
     "./www/lib/crypto-js/build/rollups/md5.js",
     "./www/lib/moment/moment.js",
-
-    "./src/js/app.js",
-    "./src/js/config.js",
-    "./src/js/controllers.js",
-    "./src/js/directives.js",
-    "./src/js/services.js"
+    "./src/js/**/*.js",
   ]
 };
 
