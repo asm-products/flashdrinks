@@ -11,14 +11,16 @@ var templateCache = require('gulp-angular-templatecache');
 
 var paths = {
   sass: ['./src/scss/**/*.scss'],
-  templates: ['./src/index.html', './src/templates/**/*.html']
+  templates: ['./src/index.html', './src/templates/**/*.html'],
+  img: ['./src/img/**/*']
 };
 
-gulp.task('default', ['sass', 'templates']);
+gulp.task('default', ['sass', 'templates', 'img']);
 
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
   gulp.watch(paths.templates, ['templates']);
+  gulp.watch(paths.img, ['img']);
 });
 
 gulp.task('sass', function(done) {
@@ -35,7 +37,7 @@ gulp.task('sass', function(done) {
 
 gulp.task('templates', function () {
   gulp.src('src/index.html')
-    .pipe(gulp.dest('www'))
+    .pipe(gulp.dest('www'));
   gulp.src('src/templates/**/*.html')
     .pipe(templateCache({
       root: 'templates/',
@@ -43,6 +45,11 @@ gulp.task('templates', function () {
     }))
     .pipe(gulp.dest('www/js'));
 });
+
+gulp.task('img', function(){
+  gulp.src(paths.img)
+    .pipe(gulp.dest('www/img'))
+})
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
