@@ -2,7 +2,7 @@
   "name": "flashdrinks",
   "app_id": "com.ocdevel.flashdrinks",
   "gulpStartupTasks": [
-    "sass",
+    "default",
     "watch"
   ],
   "watchPatterns": [

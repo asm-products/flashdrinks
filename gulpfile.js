@@ -9,20 +9,17 @@ var sh = require('shelljs');
 var karma = require('karma').server;
 var templateCache = require('gulp-angular-templatecache');
 
-gulp.task('templatecache', function () {
-  gulp.src('www/templates/**/*.html')
-    .pipe(templateCache({
-      root: 'templates/',
-      module: 'app'
-    }))
-    .pipe(gulp.dest('www/js'));
-});
-
 var paths = {
-  sass: ['./src/scss/**/*.scss']
+  sass: ['./src/scss/**/*.scss'],
+  templates: ['./src/index.html', './src/templates/**/*.html']
 };
 
-gulp.task('default', ['sass']);
+gulp.task('default', ['sass', 'templates']);
+
+gulp.task('watch', function() {
+  gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.templates, ['templates']);
+});
 
 gulp.task('sass', function(done) {
   gulp.src('./src/scss/ionic.app.scss')
@@ -36,8 +33,15 @@ gulp.task('sass', function(done) {
     .on('end', done);
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+gulp.task('templates', function () {
+  gulp.src('src/index.html')
+    .pipe(gulp.dest('www'))
+  gulp.src('src/templates/**/*.html')
+    .pipe(templateCache({
+      root: 'templates/',
+      module: 'app'
+    }))
+    .pipe(gulp.dest('www/js'));
 });
 
 gulp.task('install', ['git-check'], function() {
