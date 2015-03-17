@@ -10,6 +10,7 @@ var karma = require('karma').server;
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var ngAnnotate = require('gulp-ng-annotate');
 
 var paths = {
   sass: [
@@ -70,6 +71,7 @@ gulp.task('img', function(){
 
 gulp.task('scripts', function(){
   return gulp.src(paths.scripts)
+    .pipe(ngAnnotate())
     //.pipe(uglify())
     .pipe(concat('scripts.js'))
     .pipe(gulp.dest('www/js'));
