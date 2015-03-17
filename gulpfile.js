@@ -12,7 +12,10 @@ var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 
 var paths = {
-  sass: ['./src/scss/**/*.scss'],
+  sass: [
+    './src/scss/**/*.scss',
+    './www/lib/css-social-buttons/css/zocial.css'
+  ],
   templates: ['./src/index.html', './src/templates/**/*.html'],
   img: ['./src/img/**/*'],
   scripts: [
@@ -37,7 +40,8 @@ gulp.task('watch', function() {
 });
 
 gulp.task('sass', function(done) {
-  gulp.src('./src/scss/ionic.app.scss')
+  gulp.src(paths.sass)
+    .pipe(concat('styles.css'))
     .pipe(sass())
     .pipe(gulp.dest('./www/css/'))
     .pipe(minifyCss({
