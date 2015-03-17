@@ -8,19 +8,37 @@ var rename = require('gulp-rename');
 var sh = require('shelljs');
 var karma = require('karma').server;
 var templateCache = require('gulp-angular-templatecache');
+var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 
 var paths = {
   sass: ['./src/scss/**/*.scss'],
   templates: ['./src/index.html', './src/templates/**/*.html'],
-  img: ['./src/img/**/*']
+  img: ['./src/img/**/*'],
+  scripts: [
+    "./www/lib/ionic/js/ionic.bundle.js",
+    "./www/lib/lodash/lodash.js",
+    "./www/lib/firebase/firebase.js",
+    "./www/lib/angularfire/dist/angularfire.js",
+    "./www/lib/angular-lodash/angular-lodash.js",
+    "./www/lib/crypto-js/build/rollups/md5.js",
+    "./www/lib/moment/moment.js",
+
+    "./src/js/app.js",
+    "./src/js/config.js",
+    "./src/js/controllers.js",
+    "./src/js/directives.js",
+    "./src/js/services.js"
+  ]
 };
 
-gulp.task('default', ['sass', 'templates', 'img']);
+gulp.task('default', ['sass', 'templates', 'img', 'scripts']);
 
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
   gulp.watch(paths.templates, ['templates']);
   gulp.watch(paths.img, ['img']);
+  gulp.watch(paths.scripts, ['scripts']);
 });
 
 gulp.task('sass', function(done) {
@@ -49,7 +67,14 @@ gulp.task('templates', function () {
 gulp.task('img', function(){
   gulp.src(paths.img)
     .pipe(gulp.dest('www/img'))
-})
+});
+
+gulp.task('scripts', function(){
+  return gulp.src(paths.scripts)
+    //.pipe(uglify())
+    .pipe(concat('scripts.js'))
+    .pipe(gulp.dest('www/js'));
+});
 
 gulp.task('install', ['git-check'], function() {
   return bower.commands.install()
