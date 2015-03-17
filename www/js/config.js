@@ -7,4 +7,4 @@ angular.module('app.config', [])
   .constant('FBURL', 'https://flashdrink.firebaseio.com')
 
   // See https://github.com/lefnire/server-misc
-  .constant('YELPPROXY', 'https://lefnire-server-misc.herokuapp.com')
+  .constant('SERVER', 'https://flashdrinks-server.herokuapp.com')

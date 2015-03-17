@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, YELPPROXY) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER) {
   var deferred;
   var refreshBars = function(){
     deferred = $q.defer();
@@ -23,7 +23,7 @@ angular.module('app.services', [])
         ll: position.coords.latitude + ',' + position.coords.longitude
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-      $http.get(YELPPROXY+'/yelp-search', {params: params}).success(function(results){
+      $http.get(SERVER+'/yelp-search', {params: params}).success(function(results){
         results = results.businesses;
         deferred.resolve(results);
         _.each(results, function (bar) {
