@@ -19,13 +19,13 @@ gulp.task('templatecache', function () {
 });
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+  sass: ['./src/scss/**/*.scss']
 };
 
 gulp.task('default', ['sass']);
 
 gulp.task('sass', function(done) {
-  gulp.src('./scss/ionic.app.scss')
+  gulp.src('./src/scss/ionic.app.scss')
     .pipe(sass())
     .pipe(gulp.dest('./www/css/'))
     .pipe(minifyCss({

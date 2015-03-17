@@ -1,4 +1,12 @@
 {
   "name": "flashdrinks",
-  "app_id": "com.ocdevel.flashdrinks"
+  "app_id": "com.ocdevel.flashdrinks",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }

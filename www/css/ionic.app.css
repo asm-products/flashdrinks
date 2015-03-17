@@ -7601,3 +7601,12 @@ a.button {
   opacity: 0;
   -webkit-transition-duration: 0s;
   transition-duration: 0s; }
+
+.multi-icon .badge {
+  position: relative; }
+
+.denied-request {
+  opacity: 0.5; }
+
+.denied-request h2 {
+  color: red; }
