@@ -39,8 +39,10 @@ angular.module('app', [
     url: "/app",
     abstract: true,
     templateUrl: "templates/app.html",
-    controller: function($scope, Auth, Friends){
-      $scope.user = Auth.getUser();
+    controller: function($scope, $rootScope, Auth, Friends){
+      Auth.anonymous().then(function(user){
+        $rootScope.user = user;
+      })
       $scope.android = ionic.Platform.platform() == 'android';
       $scope.Friends = Friends;
     }

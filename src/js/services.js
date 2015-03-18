@@ -106,22 +106,32 @@ angular.module('app.services', [])
     }
   });
 
+  var deferred = $q.defer();
+  var user;
+  if (authObj.$getAuth()) {
+    user = $firebase(ref.users.child(authObj.$getAuth().uid)).$asObject();
+    deferred.resolve(user);
+  } else {
+    authObj.$authAnonymously().then(function (authData) {
+      user = $firebase(ref.users.child(authData.uid)).$asObject();
+      deferred.resolve(user);
+    });
+  }
+
   var Auth = {
-    _user: null,
+    anonymous: function(){
+      return deferred.promise;
+    },
     getUser: function(){
-      if (Auth._user) return Auth._user;
-      var authData = authObj.$getAuth();
-      if (!authData) authData = authObj.$authAnonymously();
-      Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
-      return Auth._user;
+      return user;
     },
     facebook: function(){
       //FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-popups
-      if (Auth._user.facebook) return Auth._user;
-      var authData = authObj.$authWithOAuthPopup("facebook").then(function(){
-        Auth._user = $firebase(ref.users.child(authData.uid)).$asObject();
-        $rootScope._user = Auth._user;
-        $rootScope.$apply();
+      authObj.$authWithOAuthPopup("facebook").then(function(authData){
+        user = $firebase(ref.users.child(authData.uid)).$asObject();
+        deferred = $q.defer();
+        deferred.resolve(user);
+        $rootScope.user = user;
       });
     }
   }
