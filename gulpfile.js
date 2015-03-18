@@ -11,6 +11,8 @@ var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 var ngAnnotate = require('gulp-ng-annotate');
+var gulpProtractor = require("gulp-protractor");
+var protractor = gulpProtractor.protractor;
 
 var paths = {
   sass: [
@@ -84,11 +86,32 @@ gulp.task('install', ['git-check'], function() {
     });
 });
 
-gulp.task('test', function (done) {
+gulp.task('test:unit', function (done) {
   karma.start({
     configFile: __dirname + '/test/karma.conf.js',
     singleRun: true
   }, done);
+});
+
+gulp.task('test:e2e:setup', gulpProtractor.webdriver_update);
+
+gulp.task('test:e2e:server', function(done){
+  //server.listen(9001, done);
+  done();
+});
+
+gulp.task('test:e2e', [/*'default', 'test:e2e:setup', */'test:e2e:server'], function(done){
+  gulp.src(["./test/e2e/*.js"])
+    .pipe(protractor({
+      configFile : "./test/protractor.conf.js",
+      args       : ['--baseUrl', 'http://127.0.0.1:8100'],
+      debug: true
+    }))
+    .on('error', function(e) { throw e })
+    .on('end', function(){
+      //server.close();
+      done();
+    });
 });
 
 gulp.task('git-check', function(done) {

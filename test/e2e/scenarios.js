@@ -6,52 +6,52 @@ describe('my app', function() {
   browser.get('index.html');
 
   it('should automatically redirect to /home when location hash/fragment is empty', function() {
-    expect(browser.getLocationAbsUrl()).toMatch("/home");
+    expect(browser.getLocationAbsUrl()).toMatch("/app/bars");
   });
 
   describe('home', function() {
 
     beforeEach(function() {
-      browser.get('index.html#/home');
+      browser.get('index.html#/app/bars');
     });
 
 
     it('should render home when user navigates to /home', function() {
-      expect(element.all(by.css('[ng-view] h2')).first().getText()).
-        toMatch(/Home/);
+      //expect(element.all(by.css('[ng-view] h2')).first().getText()).
+      expect(browser.getTitle()).toEqual('Bars');
     });
 
   });
-
-
-  describe('chat', function() {
-     beforeEach(function() {
-        browser.get('index.html#/chat');
-     });
-
-     it('should render chat when user navigates to /chat', function() {
-       expect(element.all(by.css('[ng-view] h2')).first().getText()).
-         toMatch(/Chat/);
-     });
-  });
-
-   describe('account', function() {
-      it('should redirect to /login if not logged in', function() {
-         browser.get('index.html#/account');
-         expect(browser.getLocationAbsUrl()).toMatch('/login');
-      });
-
-      //todo https://github.com/firebase/angularFire-seed/issues/41
-   });
-
-   describe('login', function() {
-      beforeEach(function() {
-         browser.get('index.html#/login');
-      });
-
-      it('should render login when user navigates to /login', function() {
-         expect(element.all(by.css('[ng-view] h2')).first().getText()).toMatch(/Login Page/);
-      });
+  //
+  //
+  //describe('chat', function() {
+  //   beforeEach(function() {
+  //      browser.get('index.html#/chat');
+  //   });
+  //
+  //   it('should render chat when user navigates to /chat', function() {
+  //     expect(element.all(by.css('[ng-view] h2')).first().getText()).
+  //       toMatch(/Chat/);
+  //   });
+  //});
+  //
+  // describe('account', function() {
+  //    it('should redirect to /login if not logged in', function() {
+  //       browser.get('index.html#/account');
+  //       expect(browser.getLocationAbsUrl()).toMatch('/login');
+  //    });
+  //
+  //    //todo https://github.com/firebase/angularFire-seed/issues/41
+  // });
+  //
+  // describe('login', function() {
+  //    beforeEach(function() {
+  //       browser.get('index.html#/login');
+  //    });
+  //
+  //    it('should render login when user navigates to /login', function() {
+  //       expect(element.all(by.css('[ng-view] h2')).first().getText()).toMatch(/Login Page/);
+  //    });
 
 //
 //      afterEach(function() {
@@ -83,5 +83,7 @@ describe('my app', function() {
 //         element('button[ng-click="login()"]').click();
 //         expect(element('p.error').text()).toEqual('');
 //      });
-   });
+
+
+   //});
 });

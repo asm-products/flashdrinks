@@ -4,18 +4,12 @@ module.exports = function(config){
     basePath : '../',
 
     files : [
-      'www/lib/ionic/js/ionic.bundle.js',
-      'www/lib/lodash/lodash.js',
-      'www/lib/firebase/firebase.js',
-      'www/lib/angularfire/dist/angularfire.js',
-      'www/lib/angular-filter/dist/angular-filter.js',
-      'www/lib/crypto-js/build/rollups/md5.js',
+      'www/js/scripts.js',
+      'www/js/templates.js',
 
       'www/lib/angular-mocks/angular-mocks.js',
       'www/lib/mockfirebase/browser/mockfirebase.js',
-
       'test/lib/**/*.js',
-      'www/js/**/*.js',
       'test/unit/**/*.spec.js'
     ],
 
