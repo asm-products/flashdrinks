@@ -127,12 +127,36 @@ angular.module('app.services', [])
     },
     facebook: function(){
       //FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-popups
-      authObj.$authWithOAuthPopup("facebook").then(function(authData){
-        user = $firebase(ref.users.child(authData.uid)).$asObject();
-        deferred = $q.defer();
-        deferred.resolve(user);
-        $rootScope.user = user;
-      });
+
+      if (window.facebookConnectPlugin) {
+        window.facebookConnectPlugin.login(['email'], function(status) {
+          window.facebookConnectPlugin.getAccessToken(function(token) {
+            // Authenticate with Facebook using an existing OAuth 2.0 access token
+            ref.root.authWithOAuthToken("facebook", token, function(error, authData) {
+              if (error) {
+                console.log('Firebase login failed!', error);
+              } else {
+                user = $firebase(ref.users.child(authData.uid)).$asObject();
+                deferred = $q.defer();
+                deferred.resolve(user);
+                $rootScope.user = user;
+              }
+            });
+          }, function(error) {
+            console.log('Could not get access token', error);
+          });
+        }, function(error) {
+          console.log('An error occurred logging the user in', error);
+        });
+      } else {
+        authObj.$authWithOAuthPopup("facebook").then(function(authData){
+          user = $firebase(ref.users.child(authData.uid)).$asObject();
+          deferred = $q.defer();
+          deferred.resolve(user);
+          $rootScope.user = user;
+        });
+      }
+
     }
   }
   return Auth;
