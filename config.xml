@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.ionicframework.flashdrinks666987" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>flashdrinks</name>
-  <description>
-        An Ionic Framework and Cordova project.
-    </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
-    </author>
+<widget id="com.ocdevel.flashdrinks" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>Flashdrinks</name>
+  <description>Find drinking partners nearby.</description>
+  <author email="tylerrenelle@gmail.com" href="https://flashdrink.firebaseapp.com/">Tyler Renelle</author>
   <content src="index.html"/>
   <access origin="*"/>
   <access origin="geo:*" launch-external="yes"/>

@@ -24,7 +24,6 @@
     "org.apache.cordova.geolocation",
     "org.apache.cordova.device",
     "org.apache.cordova.console",
-    "com.ionic.keyboard",
-    "com.phonegap.plugins.facebookconnect"
+    "com.ionic.keyboard"
   ]
 }
