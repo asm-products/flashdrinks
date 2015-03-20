@@ -39,13 +39,7 @@ angular.module('app', [
     url: "/app",
     abstract: true,
     templateUrl: "templates/app.html",
-    controller: function($scope, $rootScope, Auth, Friends){
-      Auth.anonymous().then(function(user){
-        $rootScope.user = user;
-      })
-      $scope.android = ionic.Platform.platform() == 'android';
-      $scope.Friends = Friends;
-    }
+    controller: 'AppCtrl'
   })
 
   // Each tab has its own nav history stack:
@@ -97,8 +91,8 @@ angular.module('app', [
     url: '/account',
     views: {
       'menuContent': {
-        templateUrl: 'templates/account.html',
-        controller: 'AccountCtrl'
+        templateUrl: 'templates/account/page.html',
+        controller: function(){}
       }
     }
   });

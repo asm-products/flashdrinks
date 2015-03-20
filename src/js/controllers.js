@@ -1,5 +1,32 @@
 angular.module('app.controllers', [])
 
+.controller('AppCtrl', function($scope, $rootScope, Auth, Friends, $ionicModal, ref){
+  Auth.anonymous().then(function(user){
+    $rootScope.user = user;
+  })
+  $scope.android = ionic.Platform.platform() == 'android';
+  $scope.Friends = Friends;
+  $scope.Auth = Auth;
+
+  // ---- Authentication Modal ----
+  $ionicModal.fromTemplateUrl('templates/account/modal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.authModal = modal;
+    Firebase.onError(function(err){
+    //FIXME code below not catching errors (goo.gl/EpskTM), so I installed "firebase-on-error". Get below code working and remove firebase-on-error
+    //ref.root.on("value", function(){}, function(err) {
+      if (err.code=='PERMISSION_DENIED') {
+        modal.show();
+      }
+    })
+  })
+  $scope.$on('$destroy', function() {
+    $scope.authModal.remove();
+  });
+})
+
 .controller('BarListCtrl', function($scope, Bars, $ionicLoading) {
   $scope.data = {
     searching:false
@@ -95,9 +122,4 @@ angular.module('app.controllers', [])
     $scope.data.text = '';
   }
   ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
-})
-
-.controller('AccountCtrl', function($scope, Auth) {
-  //$scope.user.$bindTo($scope, "fbUser");
-  $scope.Auth = Auth;
 })

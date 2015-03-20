@@ -32,6 +32,7 @@ var paths = {
     "./www/lib/angular-lodash/angular-lodash.js",
     "./www/lib/crypto-js/build/rollups/md5.js",
     "./www/lib/moment/moment.js",
+    "./www/lib/firebase-on-error/src/onerror.js",
     "./src/js/**/*.js",
   ]
 };

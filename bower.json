@@ -10,7 +10,8 @@
     "crypto-js": "https://github.com/evanvosberg/crypto-js.git#~3.1.2",
     "ionic": "driftyco/ionic-bower#master",
     "moment": "~2.9.0",
-    "angularfire": "~0.9.2"
+    "angularfire": "~0.9.2",
+    "firebase-on-error": "~0.2.1"
   },
   "devDependencies": {
     "mockfirebase": "~0.10.2",

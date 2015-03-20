@@ -1,0 +1,17 @@
+<div class="list">
+  <div class="item">
+    <button class='zocial facebook' style="width:100%" ng-click="Auth.facebook()" ng-if="user.provider!='facebook'">Login or Register</button>
+    <div ng-if="user.provider=='facebook'">
+      <p>Logged in as {{user.name}}</p>
+      <button class="button button-block" ng-click="Auth.logout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="item item-input item-stacked-label">
+    <label>
+      <span class="input-label">Profile Name</span>
+      <!--<input type="text" ng-model="fbUser.name">-->
+      <input type="text" ng-model="user.name">
+    </label>
+  </div>
+</div>
