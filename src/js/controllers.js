@@ -113,6 +113,6 @@ angular.module('app.controllers', [])
 })
 
 .controller('AccountCtrl', function($scope, Auth) {
-  $scope.user.$bindTo($scope, "fbUser");
+  //$scope.user.$bindTo($scope, "fbUser");
   $scope.Auth = Auth;
 })
