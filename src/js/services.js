@@ -138,7 +138,7 @@ angular.module('app.services', [])
       //FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-popups
 
       if (window.facebookConnectPlugin) {
-        window.facebookConnectPlugin.login(['email'], function(status) {
+        window.facebookConnectPlugin.login(['email', 'public_profile', 'user_friends'], function(status) {
           window.facebookConnectPlugin.getAccessToken(function(token) {
             // Authenticate with Facebook using an existing OAuth 2.0 access token
             ref.root.authWithOAuthToken("facebook", token, function(error, authData) {
