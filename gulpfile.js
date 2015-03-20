@@ -13,6 +13,9 @@ var concat = require('gulp-concat');
 var ngAnnotate = require('gulp-ng-annotate');
 var gulpProtractor = require("gulp-protractor");
 var protractor = gulpProtractor.protractor;
+var gulpif = require('gulp-if');
+var nconf = require('nconf');
+nconf.argv();
 
 var paths = {
   sass: [
@@ -74,7 +77,7 @@ gulp.task('img', function(){
 gulp.task('scripts', function(){
   return gulp.src(paths.scripts)
     .pipe(ngAnnotate())
-    //.pipe(uglify())
+    .pipe(gulpif(nconf.get('release'), uglify()))
     .pipe(concat('scripts.js'))
     .pipe(gulp.dest('www/js'));
 });
