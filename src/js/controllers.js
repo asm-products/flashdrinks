@@ -1,12 +1,15 @@
 angular.module('app.controllers', [])
 
 .controller('AppCtrl', function($scope, $rootScope, Auth, Friends, $ionicModal, Analytics){
-  Auth.anonymous().then(function(user){
-    $rootScope.user = user;
-  })
   $scope.android = ionic.Platform.platform() == 'android';
   $scope.Friends = Friends;
   $scope.Auth = Auth;
+
+  $rootScope.user = Auth.getUser();
+  $rootScope.$on('fd:auth', function(evt, user){
+    $rootScope.user = user;
+    $scope.authModal && $scope.authModal.hide();
+  })
 
   // ---- Authentication Modal ----
   $ionicModal.fromTemplateUrl('templates/account/modal.html', {
@@ -14,6 +17,7 @@ angular.module('app.controllers', [])
     animation: 'slide-in-up'
   }).then(function(modal) {
     $scope.authModal = modal;
+    $rootScope.$on('fd:auth:error', function(){modal.show()});
     Firebase.onError(function(err){
     //FIXME code below not catching errors (goo.gl/EpskTM), so I installed "firebase-on-error". Get below code working and remove firebase-on-error
     //ref.root.on("value", function(){}, function(err) {
@@ -44,7 +48,7 @@ angular.module('app.controllers', [])
   $scope.refresh(false);
 })
 
-.controller('BarShowCtrl', function($scope, $stateParams, Bars, bar, ref) {
+.controller('BarShowCtrl', function($scope, $stateParams, Bars, bar, ref, Auth) {
   $scope.Bars = Bars;
   $scope.bar = bar; //in state.resolve, required for view title
   $scope.data = {
@@ -52,12 +56,14 @@ angular.module('app.controllers', [])
     show_rsvps: false
   }
   // clear notifications when they click into a bar
-  var notifs = ref.users.child($scope.user.$id + '/notifs');
-  notifs.child('/chats/bars/'+bar.id).remove();
-  notifs.child('/rsvps/'+bar.id).remove();
+  if (Auth.loggedIn()) {
+    var notifs = ref.users.child($scope.user.$id + '/notifs');
+    notifs.child('/chats/bars/'+bar.id).remove();
+    notifs.child('/rsvps/'+bar.id).remove();
+  }
 })
 
-.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, Friends){
+.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, Friends, Auth, $rootScope){
   $scope.data = {
     //FIXME this isn't available if you start from bar-show for some reason
     selectedContacts : _.map($scope.user.friends, function(v,k){
@@ -65,6 +71,7 @@ angular.module('app.controllers', [])
     })
   };
   $scope.pickContact = function() {
+    if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
     ContactsService.pickContact().then(
       function(contact) {
         contact.selected = true;
@@ -78,6 +85,7 @@ angular.module('app.controllers', [])
   }
 
   $scope.sendInvites = function(contacts, bar){
+    if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
     var phoneContacts = [];
     _.each(contacts, function(c){
       if (c.phones) {
@@ -97,20 +105,25 @@ angular.module('app.controllers', [])
   }).then(function(modal) {
     $scope.modal = modal;
   });
+  $scope.openModal = function(){
+    if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
+    $scope.modal.show()
+  }
   //Cleanup the modal when we're done with it!
   $scope.$on('$destroy', function() {
     $scope.modal.remove();
   });
 })
 
-.controller('FriendListCtrl', function($scope, Friends, ref) {
+.controller('FriendListCtrl', function($scope, Friends, ref, Auth) {
   //$scope.friends = Friends.all();
   $scope.chatId = Friends.chatId;
   $scope.approve = Friends.approve;
-  ref.users.child($scope.user.$id+'/notifs/friends').remove(); // remove any new friend notfis on visiting friends
+  if (Auth.loggedIn())
+    ref.users.child($scope.user.$id+'/notifs/friends').remove(); // remove any new friend notfis on visiting friends
 })
 
-.controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref) {
+.controller('FriendShowCtrl', function($scope, $stateParams, Friends, $firebase, ref, Auth) {
   $scope.friend = Friends.get($stateParams.friendId);
   $scope.favorite = Friends.favorite;
   var chatId = Friends.chatId($scope.user.$id, $scope.friend.$id);
@@ -121,5 +134,6 @@ angular.module('app.controllers', [])
     Friends.chat($scope.user, $scope.friend, $scope.data.text);
     $scope.data.text = '';
   }
-  ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
+  if (Auth.loggedIn())
+    ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
 })

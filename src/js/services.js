@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope) {
   var deferred;
   var refreshBars = function(){
     deferred = $q.defer();
@@ -31,7 +31,8 @@ angular.module('app.services', [])
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
           // If the last person to RSVP was before 4am, reset the RSVPs
           var lastIn = moment(bar.sync.lastIn);
-          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) bar.sync.$remove('rsvps');
+          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4)
+            bar.sync.$remove('rsvps');
         })
       }).error(deferred.reject);
 
@@ -50,24 +51,26 @@ angular.module('app.services', [])
       });
     },
     rsvp: function(bar){
-      // TODO (1) use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
-      // TODO (2) denormalize https://www.firebase.com/docs/web/guide/structuring-data.html
+      if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
+      // TODO use txns instead https://www.firebase.com/docs/web/guide/saving-data.html#section-transactions
       // TODO extend service for defaults https://www.firebase.com/docs/web/libraries/angular/guide/extending-services.html#section-firebaseobject
       _.defaults(bar.sync, {rsvps:{}, count:0});
       var user = Auth.getUser();
       bar.sync.rsvps[user.$id] = !bar.sync.rsvps[user.$id];
       bar.sync.count += (bar.sync.rsvps[user.$id] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
-      bar.sync.lastIn = +new Date; //Firebase.ServerValue.TIMESTAMP; // used to later reset on the next day
-      bar.sync.$save();
-      _.each(bar.sync.rsvps, function(v,k){
-        if (k==user.$id) return;
-        ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
-      })
-      _.each(user.friends, function(v,k){
-        if (v==0) //FIXME use Friends.APPROVED
+      // Used to later reset on the next day. Not using Firebase.ServerValue.TIMESTAMP since we want local time.
+      bar.sync.lastIn = +new Date;
+      bar.sync.$save().then(function(){
+        _.each(bar.sync.rsvps, function(v,k){
+          if (k==user.$id) return;
           ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
-      })
+        })
+        _.each(user.friends, function(v,k){
+          if (v==Friends.APPROVED)
+            ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
+        })
+      });
     }
   }
 })
@@ -80,8 +83,9 @@ angular.module('app.services', [])
   asml('create', ASM_METRICS);
 
   var authObj = $firebaseAuth(ref.root);
-  if (authObj.$getAuth().uid)
-    asml('track', CryptoJS.MD5(authObj.$getAuth().uid).toString());
+  var uid = authObj.$getAuth() && authObj.$getAuth().uid;
+  if (uid)
+    asml('track', CryptoJS.MD5(uid).toString());
   else
     asml('track');
 
@@ -91,9 +95,16 @@ angular.module('app.services', [])
 .factory('Auth', function($q, ref, $firebase, $firebaseAuth, $rootScope){
   var authObj = $firebaseAuth(ref.root);
 
+  var user = {$id:'anon'};
+  $rootScope.$on('fd:auth', function(evt, _user){
+    user = _user;
+  });
+
   // When we register a new user, save it to /users collection too. We need users
   authObj.$onAuth(function(authData) {
     if (authData) {
+      console.log(authData);
+      $rootScope.$broadcast('fd:auth', $firebase(ref.users.child(authData.uid)).$asObject());
 
       var authFields = _.pick(authData, ['uid', 'provider', 'facebook']);
       authFields.facebook = _.pick(authData.facebook, ['cachedUserProfile', 'displayName', 'email', 'id']);
@@ -109,67 +120,39 @@ angular.module('app.services', [])
     }
   });
 
-  var deferred = $q.defer();
-  var user;
-  if (authObj.$getAuth()) {
-    user = $firebase(ref.users.child(authObj.$getAuth().uid)).$asObject();
-    deferred.resolve(user);
-  } else {
-    authObj.$authAnonymously().then(function (authData) {
-      user = $firebase(ref.users.child(authData.uid)).$asObject();
-      deferred.resolve(user);
-    });
-  }
-
   var Auth = {
-    anonymous: function(){
-      return deferred.promise;
-    },
     getUser: function(){
       return user;
     },
+    loggedIn: function(){
+      return user.$id !== 'anon';
+    },
     logout: function(){
       authObj.$unauth();
-      authObj.$authAnonymously().then(function (authData) {
-        user = $firebase(ref.users.child(authData.uid)).$asObject();
-        $rootScope.user = user;
-        //deferred.resolve(user); //FIXME
-      });
+      $rootScope.$broadcast('fd:auth', {$id:'anon'});
 
     },
     facebook: function(){
-      //FIXME https://www.firebase.com/docs/web/guide/user-auth.html#section-popups
-
+      // App
       if (window.facebookConnectPlugin) {
         window.facebookConnectPlugin.login(['email', 'public_profile', 'user_friends'], function(status) {
           window.facebookConnectPlugin.getAccessToken(function(token) {
             // Authenticate with Facebook using an existing OAuth 2.0 access token
-            ref.root.authWithOAuthToken("facebook", token, function(error, authData) {
+            ref.root.authWithOAuthToken("facebook", token, function(error) {
               if (error) {
                 alert('Firebase login failed!'+error);
                 console.log('Firebase login failed!', error);
-              } else {
-                user = $firebase(ref.users.child(authData.uid)).$asObject();
-                deferred = $q.defer();
-                deferred.resolve(user);
-                $rootScope.user = user;
               }
             });
           }, function(error) {
             alert('Could not get access token'+error);
-            console.log('Could not get access token', error);
           });
         }, function(error) {
           alert('An error occurred logging the user in'+error)
-          console.log('An error occurred logging the user in', error);
         });
+      // Website
       } else {
-        authObj.$authWithOAuthPopup("facebook").then(function(authData){
-          user = $firebase(ref.users.child(authData.uid)).$asObject();
-          deferred = $q.defer();
-          deferred.resolve(user);
-          $rootScope.user = user;
-        });
+        authObj.$authWithOAuthPopup("facebook");
       }
 
     }
@@ -177,7 +160,7 @@ angular.module('app.services', [])
   return Auth;
 })
 
-.factory('Friends', function($firebase, ref, Auth){
+.factory('Friends', function($firebase, ref, Auth, $rootScope){
   var friends = {
     PENDING: 1,
     APPROVED: 0,
@@ -185,16 +168,13 @@ angular.module('app.services', [])
 
     all: function(){
       var u = Auth.getUser();
-      if (!u.friends) {
-        u.friends = {};
-        u.$save()
-      }
-      return u.friends;
+      return u.friends || {};
     },
     get: function(friendId){
       return $firebase(ref.users.child(friendId)).$asObject();
     },
     favorite: function(friend) {
+      if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
       var fid = friend.$id,
         uid = Auth.getUser().$id,
         request = friend.friends && friend.friends[uid];
@@ -210,6 +190,7 @@ angular.module('app.services', [])
       }
     },
     approve: function(friend, approval){
+      if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
       var fid = friend.$id,
         uid = Auth.getUser().$id;
       switch (approval) {
@@ -228,6 +209,7 @@ angular.module('app.services', [])
       return chatId[0]+chatId[1];
     },
     chat: function(user, friend, text){
+      if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
       $firebase(ref.chats.child( friends.chatId(user.$id, friend.$id) )).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,

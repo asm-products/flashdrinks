@@ -27,6 +27,8 @@
       ".read": true,
       ".write": "auth != null",
       //"lastIn": {".write": "auth != null"},
+      "count": {".validate": "auth != null"},
+      "lastIn": {".validate": "auth != null"},
       "rsvps": {
         "$rid": {
           ".validate": "auth != null && auth.uid == $rid"
