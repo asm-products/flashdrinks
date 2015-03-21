@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('AppCtrl', function($scope, $rootScope, Auth, Friends, $ionicModal, ref){
+.controller('AppCtrl', function($scope, $rootScope, Auth, Friends, $ionicModal, Analytics){
   Auth.anonymous().then(function(user){
     $rootScope.user = user;
   })
