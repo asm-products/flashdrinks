@@ -137,3 +137,25 @@ angular.module('app.controllers', [])
   if (Auth.loggedIn())
     ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
 })
+
+.controller('AccountCtrl', function($scope, ImageUploadService, $cordovaCamera){
+  ImageUploadService.uploadImage($scope.imageURI).then(
+    function(result) {
+
+      var url = result.secure_url || '';
+      var urlSmall;
+
+      if(result && result.eager[0]) urlSmall = result.eager[0].secure_url || '';
+
+      // Do something with the results here.
+
+      $cordovaCamera.cleanup();
+
+    },
+    function(err) {
+
+      // Do something with the error here
+      $cordovaCamera.cleanup();
+
+    })
+})
