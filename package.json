@@ -27,6 +27,12 @@
     "org.apache.cordova.device",
     "org.apache.cordova.console",
     "com.ionic.keyboard",
-    "com.phonegap.plugins.facebookconnect"
+    "org.apache.cordova.file",
+    "org.apache.cordova.file-transfer",
+    "org.apache.cordova.camera",
+    {
+      "id": "com.phonegap.plugins.facebookconnect",
+      "locator": "../phonegap-facebook-plugin"
+    }
   ]
 }

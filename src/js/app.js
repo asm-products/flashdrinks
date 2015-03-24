@@ -2,6 +2,7 @@ angular.module('app', [
   'ionic',
   'firebase',
   'angular-lodash',
+  'ngCordova',
   'app.config',
   'app.controllers',
   'app.services',
@@ -92,12 +93,12 @@ angular.module('app', [
     views: {
       'menuContent': {
         templateUrl: 'templates/account/page.html',
-        controller: function(){}
+        controller: 'AccountCtrl'
       }
     }
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/bars');
+  $urlRouterProvider.otherwise('/app/account');
 
 });

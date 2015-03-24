@@ -138,24 +138,41 @@ angular.module('app.controllers', [])
     ref.users.child($scope.user.$id + '/notifs/chats/friends/' + chatId).remove();
 })
 
-.controller('AccountCtrl', function($scope, ImageUploadService, $cordovaCamera){
-  ImageUploadService.uploadImage($scope.imageURI).then(
-    function(result) {
+.controller('AccountCtrl', function($scope, ImageUploadService, $cordovaCamera, Auth, ref){
+  $scope.upload = function(){
+    var options = {
+      quality: 50,
+      //destinationType: Camera.DestinationType.DATA_URL,
+      destinationType: Camera.DestinationType.FILE_URI,
+      //sourceType: Camera.PictureSourceType.CAMERA,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+      allowEdit: true,
+      //encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 80, //FIXME can this be used completely in liou of server s3 scaling?
+      targetHeight: 80,
+      //popoverOptions: CameraPopoverOptions,
+      //saveToPhotoAlbum: false
+    };
 
-      var url = result.secure_url || '';
-      var urlSmall;
+    $cordovaCamera.getPicture(options).then(function(imageURI) {
+      ImageUploadService.uploadImage(imageURI).then(
+        function(result) {
+          ref.users.child(Auth.getUser().$id).update({
+            picture: result[0].url
+          });
 
-      if(result && result.eager[0]) urlSmall = result.eager[0].secure_url || '';
+          // Do something with the results here.
+          $cordovaCamera.cleanup();
+        },
+        function(err) {
+          console.dir(err);
+          // Do something with the error here
+          $cordovaCamera.cleanup();
+        });
 
-      // Do something with the results here.
-
-      $cordovaCamera.cleanup();
-
-    },
-    function(err) {
-
-      // Do something with the error here
-      $cordovaCamera.cleanup();
-
-    })
+    }, function(err) {
+      console.dir(err);
+      debugger;
+    });
+  }
 })

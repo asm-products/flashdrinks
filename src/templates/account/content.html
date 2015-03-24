@@ -4,8 +4,12 @@
     <div ng-if="user.$id!='anon'">
       <p>Logged in as {{user.name}}</p>
       <button class="button button-block" ng-click="Auth.logout()">Log out</button>
+
+      <img src="{{user.picture}}" />
+      <button class="button button-block" ng-click="upload()">Set Profile Picture</button>
     </div>
   </div>
+
 
   <!--<div class="item item-input item-stacked-label">-->
     <!--<label>-->

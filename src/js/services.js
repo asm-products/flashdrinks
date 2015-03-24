@@ -270,7 +270,7 @@ angular.module('app.services', [])
     };
   }])
 
-.factory('ImageUploadService', function($q, $ionicLoading, $cordovaFile, $translate, CLOUDINARY_CONFIGS) {
+.factory('ImageUploadService', function($q, $ionicLoading, $cordovaFileTransfer, SERVER) {
 
   var service = {};
 
@@ -279,9 +279,7 @@ angular.module('app.services', [])
   return service;
 
   function uploadImage(imageURI) {
-
     var deferred = $q.defer();
-
     var fileSize;
     var percentage;
 
@@ -299,18 +297,9 @@ angular.module('app.services', [])
     });
 
     function uploadFile() {
-
-      // Add the Cloudinary "upload preset" name to the headers
-      var uploadOptions = {
-        params : { 'upload_preset': CLOUDINARY_CONFIGS.UPLOAD_PRESET}
-      };
-
-      $cordovaFile
-        // Your Cloudinary URL will go here
-        .uploadFile(CLOUDINARY_CONFIGS.API_URL, imageURI, uploadOptions)
-
+      $cordovaFileTransfer
+        .upload(SERVER + '/s3-upload', imageURI)
         .then(function(result) {
-
           // Let the user know the upload is completed
           $ionicLoading.show({template : 'Upload Completed', duration: 1000});
 
@@ -321,7 +310,7 @@ angular.module('app.services', [])
           deferred.resolve(response);
 
         }, function(err) {
-
+          console.dir(err);
           // Uh oh!
           $ionicLoading.show({template : 'Upload Failed', duration: 3000});
           deferred.reject(err);
@@ -335,7 +324,6 @@ angular.module('app.services', [])
     }
 
     return deferred.promise;
-
   }
 
 })
