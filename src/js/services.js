@@ -19,7 +19,9 @@ angular.module('app.services', [])
     //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
     navigator.geolocation.getCurrentPosition(function (position) {
       var params = {
-        category_filter: 'nightlife', //https://www.yelp.com/developers/documentation/v2/all_category_list
+        // See https://www.yelp.com/developers/documentation/v2/all_category_list. Parent category `nightlife` includes
+        // too much, we exclude adultentertainment,coffeeshops,comedyclubs,countrydancehalls,dancerestaurants,fasil
+        category_filter: 'bars,beergardens,danceclubs,jazzandblues,karaoke,musicvenues,pianobars,poolhalls',
         ll: position.coords.latitude + ',' + position.coords.longitude
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
