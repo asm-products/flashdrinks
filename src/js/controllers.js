@@ -157,10 +157,12 @@ angular.module('app.controllers', [])
     $cordovaCamera.getPicture(options).then(function(imageURI) {
       ImageUploadService.uploadImage(imageURI).then(
         function(result) {
+          result = angular.fromJson(result.response);
+          console.dir(result);
           ref.users.child(Auth.getUser().$id).update({
             picture: result[0].url
           });
-
+r
           // Do something with the results here.
           $cordovaCamera.cleanup();
         },
