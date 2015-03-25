@@ -12,23 +12,28 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope) {
-  var deferred;
-  var refreshBars = function(){
-    deferred = $q.defer();
+.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation) {
+  var deferred, bars;
+
+  var search = function(opts){
+    if (opts.refresh) bars = [];
+    if (opts.refresh || opts.offset) deferred = $q.defer();
+
+    // TODO implement geo watcher http://ngcordova.com/docs/plugins/geolocation/
     //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
-    navigator.geolocation.getCurrentPosition(function (position) {
+    $cordovaGeolocation.getCurrentPosition({maximumAge:300000, timeout:10000}).then(function (position) {
       var params = {
         // See https://www.yelp.com/developers/documentation/v2/all_category_list. Parent category `nightlife` includes
         // too much, we exclude adultentertainment,coffeeshops,comedyclubs,countrydancehalls,dancerestaurants,fasil
         category_filter: 'bars,beergardens,danceclubs,jazzandblues,karaoke,musicvenues,pianobars,poolhalls',
-        ll: position.coords.latitude + ',' + position.coords.longitude
+        ll: position.coords.latitude + ',' + position.coords.longitude,
+        offset: opts.offset || 0
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
       $http.get(SERVER+'/yelp-search', {params: params}).success(function(results){
-        results = results.businesses;
-        deferred.resolve(results);
-        _.each(results, function (bar) {
+        bars = _.uniq(bars.concat(results.businesses), 'id');
+        deferred.resolve(bars);
+        _.each(results.businesses, function (bar) {
           bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
           // If the last person to RSVP was before 4am, reset the RSVPs
@@ -38,19 +43,23 @@ angular.module('app.services', [])
         })
       }).error(deferred.reject);
 
-    }, deferred.reject, {maximumAge:300000, timeout:5000});
+    }, deferred.reject)
   }
-  refreshBars();
+  search({refresh:true});
 
   return {
     all: function(refresh) {
-      if (refresh) refreshBars();
+      search({refresh:refresh});
       return deferred.promise;
     },
     get: function(barId) {
       return deferred.promise.then(function(bars){
         return _.find(bars, {id:barId});
       });
+    },
+    loadMore: function(){
+      search({offset: bars.length});
+      return deferred.promise;
     },
     rsvp: function(bar){
       if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');

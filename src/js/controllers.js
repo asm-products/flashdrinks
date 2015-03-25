@@ -45,7 +45,14 @@ angular.module('app.controllers', [])
       debugger;
     });
   }
-  $scope.refresh(false);
+  $scope.loadMore = function(){
+    Bars.loadMore().then(function(bars){
+      $scope.bars = bars;
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+      $scope.$broadcast('scroll.refreshComplete');
+      $ionicLoading.hide();
+    })
+  }
 })
 
 .controller('BarShowCtrl', function($scope, $stateParams, Bars, bar, ref, Auth) {

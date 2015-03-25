@@ -1,5 +1,6 @@
 angular.module('app', [
   'ionic',
+  'ngCordova',
   'firebase',
   'angular-lodash',
   'app.config',
