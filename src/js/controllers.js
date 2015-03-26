@@ -35,12 +35,10 @@ angular.module('app.controllers', [])
   $scope.data = {
     searching:false
   };
-  $ionicLoading.show({template: 'Loading...'});
   $scope.refresh = function(force){
     Bars.all(force).then(function(bars){
       $scope.bars = bars;
       $scope.$broadcast('scroll.refreshComplete');
-      $ionicLoading.hide();
     }, function(){
       debugger;
     });
@@ -50,7 +48,6 @@ angular.module('app.controllers', [])
       $scope.bars = bars;
       $scope.$broadcast('scroll.infiniteScrollComplete');
       $scope.$broadcast('scroll.refreshComplete');
-      $ionicLoading.hide();
     })
   }
 })
