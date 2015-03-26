@@ -7,6 +7,6 @@
   ],
   "watchPatterns": [
     "www/**/*",
-    "!www/lib/**/*"
+    "!www/bower_components/**/*"
   ]
 }

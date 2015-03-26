@@ -20,24 +20,29 @@ nconf.argv();
 var paths = {
   sass: [
     './src/scss/**/*.scss',
-    './www/lib/css-social-buttons/css/zocial.css'
+    './bower_components/css-social-buttons/css/zocial.css'
   ],
   templates: ['./src/index.html', './src/templates/**/*.html'],
   img: ['./src/img/**/*'],
   scripts: [
-    "./www/lib/ionic/js/ionic.bundle.js",
-    "./www/lib/lodash/lodash.js",
-    "./www/lib/firebase/firebase.js",
-    "./www/lib/angularfire/dist/angularfire.js",
-    "./www/lib/angular-lodash/angular-lodash.js",
-    "./www/lib/crypto-js/build/rollups/md5.js",
-    "./www/lib/moment/moment.js",
-    "./www/lib/firebase-on-error/src/onerror.js",
-    "./src/js/**/*.js",
+    "./bower_components/ionic/js/ionic.bundle.js",
+    "./bower_components/lodash/lodash.js",
+    "./bower_components/firebase/firebase.js",
+    "./bower_components/angularfire/dist/angularfire.js",
+    "./bower_components/angular-lodash/angular-lodash.js",
+    "./bower_components/crypto-js/build/rollups/md5.js",
+    "./bower_components/moment/moment.js",
+    "./bower_components/firebase-on-error/src/onerror.js",
+    "./src/js/**/*.js"
+  ],
+  bower_components: [
+    "./bower_components/css-social-buttons/**/*",
+    "./bower_components/ionic/fonts/**/*",
+    "./bower_components/ngCordova/dist/ng-cordova.min.js",
   ]
 };
 
-gulp.task('default', ['sass', 'templates', 'img', 'scripts']);
+gulp.task('default', ['sass', 'templates', 'copy', 'scripts']);
 
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
@@ -70,9 +75,11 @@ gulp.task('templates', function () {
     .pipe(gulp.dest('www/js'));
 });
 
-gulp.task('img', function(){
+gulp.task('copy', function(){
   gulp.src(paths.img)
     .pipe(gulp.dest('www/img'))
+  gulp.src(paths.bower_components, {base: '.' })
+    .pipe(gulp.dest('www'))
 });
 
 gulp.task('scripts', function(){
