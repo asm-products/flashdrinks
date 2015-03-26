@@ -18,7 +18,7 @@
 
       <ion-item
         class="item-remove-animate item-thumbnail-left item-icon-right"
-        collection-repeat="bar in bars track by bar.id | filter:data.search"
+        ng-repeat="bar in bars track by bar.id | filter:data.search"
         type="item-text-wrap"
         href="#/app/bars/{{::bar.id}}">
         
