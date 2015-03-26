@@ -14,6 +14,7 @@ var ngAnnotate = require('gulp-ng-annotate');
 var gulpProtractor = require("gulp-protractor");
 var protractor = gulpProtractor.protractor;
 var gulpif = require('gulp-if');
+var del = require('del');
 var nconf = require('nconf');
 nconf.argv();
 
@@ -75,9 +76,13 @@ gulp.task('templates', function () {
     .pipe(gulp.dest('www/js'));
 });
 
+gulp.task('clean', function(){
+  del(['./www/bower_components', './www/img']);
+})
+
 gulp.task('copy', function(){
   gulp.src(paths.img)
-    .pipe(gulp.dest('www/img'))
+    .pipe(gulp.dest('www/img'));
   gulp.src(paths.bower_components, {base: '.' })
     .pipe(gulp.dest('www'))
 });
