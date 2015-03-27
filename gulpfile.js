@@ -27,6 +27,7 @@ var paths = {
   templates: [
     './src/index.jade',
     './src/privacy.jade',
+    './src/privacy2.jade',
     './src/templates/**/*.jade'],
   img: ['./src/img/**/*'],
   scripts: [
@@ -71,7 +72,7 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('templates', function () {
-  gulp.src(['src/index.jade', 'src/privacy.jade'])
+  gulp.src(['src/index.jade', 'src/privacy.jade', 'src/privacy2.jade'])
     .pipe(jade())
     .pipe(gulp.dest('www'));
   gulp.src('src/templates/**/*.jade')
