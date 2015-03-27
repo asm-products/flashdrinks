@@ -24,7 +24,10 @@ var paths = {
     './src/scss/**/*.scss',
     './bower_components/css-social-buttons/css/zocial.css'
   ],
-  templates: ['./src/index.jade', './src/templates/**/*.jadei'],
+  templates: [
+    './src/index.jade',
+    './src/privacy.jade',
+    './src/templates/**/*.jade'],
   img: ['./src/img/**/*'],
   scripts: [
     "./bower_components/ionic/js/ionic.bundle.js",
@@ -68,7 +71,7 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('templates', function () {
-  gulp.src('src/index.jade')
+  gulp.src(['src/index.jade', 'src/privacy.jade'])
     .pipe(jade())
     .pipe(gulp.dest('www'));
   gulp.src('src/templates/**/*.jade')
