@@ -1,0 +1,16 @@
+.item.item-divider
+  | Chat
+.item.item-input-inset
+  label.item-input-wrapper
+    input(type='text', placeholder='Type your message', ng-model='data.text')
+  button.button.button-small.button-icon.icon.ion-android-send.footer-btn(ng-click='send()', ng-disabled='!data.text')
+.item(ng-if='chats.length<1')
+  | No messages, be the first to say something.
+ion-item.item-avatar.item-text-wrap(ng-repeat="chat in chats | toArray | orderBy:'-timestamp'", ng-init='profile=Friends.get(chat.user)')
+  img(ng-src='{{profile.picture}}', ui-sref='app.friend-show({friendId:profile.$id})')
+  h2 {{profile.name}}
+  p {{::chat.text}}
+  p
+    a.subdued
+      i.ion-clock
+      | &nbsp;{{chat.timestamp | date:'short'}}

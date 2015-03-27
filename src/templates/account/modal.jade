@@ -1,0 +1,9 @@
+ion-modal-view
+  ion-header-bar
+    h1.title Sign In
+    button.button.button-clear.button-primary(ng-click='authModal.hide()')
+      i.icon.ion-close
+  ion-content
+    .item.assertive
+      | You must authenticate to perform this action.
+    ng-include(src="'templates/account/content.html'")

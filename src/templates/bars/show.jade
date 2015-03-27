@@ -1,0 +1,27 @@
+ion-view(view-title='{{::bar.name}}')
+
+  // Header
+  ion-nav-buttons(side='right')
+    button.button.icon.ion-person-add(ng-controller='InviteFriendsCtrl', ng-click='openModal()')
+
+  // Content
+  ion-content.padding
+    .list
+      .item.item-thumbnail-left
+        img(ng-src='{{::bar.image_url}}', style='width: 80px; height: 80px')
+        p {{::bar.snippet_text}}
+      .item.item-button-right
+        | {{bar.sync.rsvps[user.$id] ? 'You are joining tonight' : 'You are not joining tonight'}}
+        button.button.button-small(ng-class="{'button-assertive': bar.sync.rsvps[user.$id], 'button-balanced': !bar.sync.rsvps[user.$id]}", ng-click='Bars.rsvp(bar)')
+          | {{bar.sync.rsvps[user.$id] ? 'Leave' : 'Join'}}
+      .item.item-icon-right(ng-if='bar.sync.count>0', ng-click='data.show_rsvps=!data.show_rsvps')
+        | {{bar.sync.count}} are people coming
+        i.icon.icon-accessory(ng-class="{'ion-chevron-right':!data.show_rsvps, 'ion-chevron-up':data.show_rsvps}")
+        ion-list(ng-if='data.show_rsvps')
+          ion-item.item-avatar(ng-repeat='(uid,v) in bar.sync.rsvps', href='#/app/friends/{{::profile.$id}}', ng-init='profile=Friends.get(uid)')
+            img(ng-src='{{::profile.picture}}')
+            h2 {{::profile.name}}
+      a.item.item-icon-left(ng-href='geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}', target='_blank')
+        i.icon.ion-map
+        | {{::bar.distance*0.000621371192 | number:2}} miles away
+      chat-list(chat-id='bar.id', type='bar')

@@ -1,0 +1,12 @@
+ion-view(view-title='{{friend.name}}')
+  // Header
+  ion-nav-buttons(side='right')
+    button.button.icon(ng-class="{'ion-ios-star-outline': user.friends[friend.$id]!==Friends.APPROVED, 'ion-ios-star': user.friends[friend.$id]===Friends.APPROVED}", ng-click='favorite(friend)')
+
+  // Content
+  ion-content.padding
+    .list
+      .item.item-thumbnail-left
+        img(ng-src='{{friend.picture}}')
+        h3 {{friend.name}}
+      chat-list(chat-id='[user.$id, friend.$id]', ng-if='user.friends[friend.$id]===Friends.APPROVED')

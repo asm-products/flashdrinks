@@ -1,0 +1,15 @@
+ion-view(view-title='Friends')
+  ion-content
+    ion-list
+      ion-item.item-thumbnail-left.item-icon-right(ng-class="{'denied-request': user.friends[k]==Friends.DENIED}", ng-repeat='(k,v) in user.friends track by k', ng-init='friend=Friends.get(k);cid=chatId(user.$id, friend.$id)', type='item-text-wrap', href='#/app/friends/{{::friend.$id}}')
+        img(ng-src='{{friend.picture}}')
+        h2 {{friend.name}}
+        .icon.multi-icon(ng-if='user.notifs.chats.friends[cid]')
+          span.badge.badge-assertive
+            // {{data.chats.length}}
+            i.ion-chatbubbles
+        .button-bar(ng-if='user.friends[k]==Friends.PENDING')
+          a.button.button-positive(ng-click='approve(friend, Friends.APPROVED)') Approve
+          a.button.button-assertive(ng-click='approve(friend, Friends.DENIED)') Deny
+        a.button.button-positive(ng-if='user.friends[k]==Friends.DENIED', ng-click='approve(friend, Friends.APPROVED)') Approve
+        i.icon.ion-chevron-right.icon-accessory

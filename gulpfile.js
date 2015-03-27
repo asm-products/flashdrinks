@@ -15,6 +15,7 @@ var gulpProtractor = require("gulp-protractor");
 var protractor = gulpProtractor.protractor;
 var gulpif = require('gulp-if');
 var del = require('del');
+var jade = require('gulp-jade');
 var nconf = require('nconf');
 nconf.argv();
 
@@ -23,7 +24,7 @@ var paths = {
     './src/scss/**/*.scss',
     './bower_components/css-social-buttons/css/zocial.css'
   ],
-  templates: ['./src/index.html', './src/templates/**/*.html'],
+  templates: ['./src/index.jade', './src/templates/**/*.jadei'],
   img: ['./src/img/**/*'],
   scripts: [
     "./bower_components/ionic/js/ionic.bundle.js",
@@ -66,9 +67,11 @@ gulp.task('sass', function(done) {
 });
 
 gulp.task('templates', function () {
-  gulp.src('src/index.html')
+  gulp.src('src/index.jade')
+    .pipe(jade())
     .pipe(gulp.dest('www'));
-  gulp.src('src/templates/**/*.html')
+  gulp.src('src/templates/**/*.jade')
+    .pipe(jade())
     .pipe(templateCache({
       root: 'templates/',
       module: 'app'

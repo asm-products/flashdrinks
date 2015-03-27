@@ -1,0 +1,12 @@
+.list
+  .item
+    button.zocial.facebook(style='width:100%', ng-click='Auth.facebook()', ng-if="user.$id=='anon'") Login or Register
+    div(ng-if="user.$id!='anon'")
+      p Logged in as {{user.name}}
+      button.button.button-block(ng-click='Auth.logout()') Log out
+
+  //-.item.item-input.item-stacked-label
+    label
+      span.input-label Profile Name
+      input(type='text', ng-model='fbUser.name')
+      input(type='text', ng-model='user.name')

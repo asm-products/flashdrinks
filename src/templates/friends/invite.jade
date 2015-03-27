@@ -1,0 +1,15 @@
+ion-modal-view
+  ion-header-bar
+    h1.title Invite Friends
+    button.button.button-clear.button-primary(ng-click='modal.hide()')
+      i.icon.ion-close
+
+  ion-content
+    ul.list
+      li.item.item-checkbox(ng-repeat='profile in data.selectedContacts')
+        label.checkbox(ng-model='profile.selected')
+          input(type='checkbox')
+        | {{::profile.displayName || profile.name}}
+  ion-footer-bar
+    button.button.icon-left.ion-search(ng-click='pickContact()') Select Contact
+    button.button.button-positive.icon-left.ion-paper-airplane(ng-click='sendInvites(data.selectedContacts, bar)') Send Invites

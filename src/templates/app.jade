@@ -1,0 +1,26 @@
+ion-side-menus(enable-menu-with-back-views='false')
+
+  ion-side-menu-content
+    //- NOTE: class={{}}, different than ng-class={} in menu. In both instances required exactly so, ionic bug?
+    ion-nav-bar(class='{{::android ? "bar-positive" : "bar-stable"}}')
+      ion-nav-back-button
+      ion-nav-buttons(side='left')
+        button.button.button-icon.button-clear.ion-navicon(menu-toggle='left')
+    ion-nav-view(name='menuContent')
+
+  ion-side-menu(side='left')
+    ion-header-bar(ng-class="::{'bar-positive':android, 'bar-stable':!android}")
+      h1.title Menu
+    ion-content
+      ion-list
+        ion-item.item-icon-left.item-icon-right(nav-clear='', menu-close='', href='#/app/bars')
+          | Bars
+          i.icon.ion-beer
+          span.badge.badge-assertive(ng-show='user.notifs.chats.bars || user.notifs.rsvps') 1
+        ion-item.item-icon-left.item-icon-right(nav-clear='', menu-close='', href='#/app/friends')
+          | Friends
+          i.icon.ion-person-stalker
+          span.badge.badge-assertive(ng-show='user.notifs.friends || user.notifs.chats.friends') 1
+        ion-item.item-icon-left(nav-clear='', menu-close='', href='#/app/account')
+          | Account
+          i.icon.ion-gear-a
