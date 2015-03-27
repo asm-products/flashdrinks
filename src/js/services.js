@@ -12,8 +12,14 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation, CacheFactory) {
   var deferred, bars;
+
+  CacheFactory('barsCache', {
+    maxAge: 1 * 60 * 1000, // Items added to this cache expire after 1m
+    cacheFlushInterval: 10 * 60 * 1000, // This cache will clear itself every 10m
+    deleteOnExpire: 'aggressive' // Items will be deleted from this cache when they expire
+  });
 
   var search = function(opts){
     if (opts.refresh) bars = [];
@@ -30,7 +36,7 @@ angular.module('app.services', [])
         offset: opts.offset || 0
       };
       // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-      $http.get(SERVER+'/yelp-search', {params: params}).success(function(results){
+      $http.get(SERVER+'/yelp-search', {params: params, cache: CacheFactory.get('barsCache')}).success(function(results){
         bars = _.uniq(bars.concat(results.businesses), 'id');
         deferred.resolve(bars);
         _.each(results.businesses, function (bar) {

@@ -35,6 +35,7 @@ var paths = {
     "./bower_components/crypto-js/build/rollups/md5.js",
     "./bower_components/moment/moment.js",
     "./bower_components/firebase-on-error/src/onerror.js",
+    "./bower_components/angular-cache/dist/angular-cache.js",
     "./src/js/**/*.js"
   ],
   bower_components: [

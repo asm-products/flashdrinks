@@ -2,6 +2,7 @@ angular.module('app', [
   'ionic',
   'ngCordova',
   'firebase',
+  'angular-cache',
   'angular-lodash',
   'app.config',
   'app.controllers',

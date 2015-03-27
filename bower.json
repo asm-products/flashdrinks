@@ -12,7 +12,8 @@
     "moment": "~2.9.0",
     "angularfire": "~0.9.2",
     "firebase-on-error": "~0.2.1",
-    "ngCordova": "~0.1.14-alpha"
+    "ngCordova": "~0.1.14-alpha",
+    "angular-cache": "~4.0.2"
   },
   "devDependencies": {
     "mockfirebase": "~0.10.2",
