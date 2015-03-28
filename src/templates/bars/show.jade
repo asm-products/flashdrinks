@@ -7,9 +7,10 @@ ion-view(view-title='{{::bar.name}}')
   // Content
   ion-content.padding
     .list
-      .item.item-thumbnail-left
+      .item.item-text-wrap.item-thumbnail-left.item-icon-right(system-link="::bar.mobile_url")
         img(ng-src='{{::bar.image_url}}', style='width: 80px; height: 80px')
         p {{::bar.snippet_text}}
+        i.icon.icon-accessory.ion-chevron-right
       .item.item-button-right
         | {{bar.sync.rsvps[user.$id] ? 'You are joining tonight' : 'You are not joining tonight'}}
         button.button.button-small(ng-class="{'button-assertive': bar.sync.rsvps[user.$id], 'button-balanced': !bar.sync.rsvps[user.$id]}", ng-click='Bars.rsvp(bar)')

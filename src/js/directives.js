@@ -52,3 +52,20 @@ angular.module('app.directives', [])
     }
   }
 })
+
+.directive('systemLink', function($cordovaInAppBrowser){
+  return {
+    restrict: 'A',
+    scope: {systemLink:'='},
+    link: function(scope, element, attrs){
+      element.attr('style', 'cursor:pointer;');
+      element.on('click', function(evt){
+        evt.preventDefault();
+        window.cordova ?
+          $cordovaInAppBrowser.open(scope.systemLink, '_system') :
+          window.open(scope.systemLink, '_blank'/*, 'location=yes'*/);
+        return false;
+      })
+    }
+  }
+})
