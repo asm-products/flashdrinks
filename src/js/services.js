@@ -195,6 +195,7 @@ angular.module('app.services', [])
       var fid = friend.$id,
         uid = Auth.getUser().$id,
         request = friend.friends && friend.friends[uid];
+      if (fid == uid) return alert("Cannot friend self.");
       if (request === friends.DENIED || request === friends.PENDING)
         return alert("You already sent a friend request");
       if (angular.isDefined(friends.all()[fid])){
