@@ -1,7 +1,7 @@
 angular.module('app.services', [])
 
-.factory('ref', function($window, FBURL){
-  var root = new $window.Firebase(FBURL)
+.factory('ref', function($window, FBDATA){
+  var root = new $window.Firebase(FBDATA)
   var ref = {
     root: root,
     users: root.child('users'),
@@ -237,7 +237,7 @@ angular.module('app.services', [])
   return friends;
 })
 
-.service("ContactsService", ['$q', function($q, $window) {
+.service("ContactsService", function($q, $window, FBSITE) {
     var formatContact = function(contact) {
       return {
         "displayName"   : contact.name.formatted || contact.name.givenName + " " + contact.name.familyName || "Mystery Person",
@@ -271,7 +271,7 @@ angular.module('app.services', [])
           //intent: '' // send SMS without open any other app
         }
       };
-      var message = "Come to the bar with me tonight! Deets at "+FBURL+"/#/tab/bars/"+bar.id;
+      var message = "Come to the bar with me tonight! Deets at "+FBSITE+"/#/tab/bars/"+bar.id;
       $window.sms.send(nums, message, options, function(){
         console.log('message sent successfully');
         $scope.data.selectedContacts = [];
@@ -285,4 +285,4 @@ angular.module('app.services', [])
       pickContact : pickContact,
       sendSMS: sendSMS
     };
-  }])
+  })

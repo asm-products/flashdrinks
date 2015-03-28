@@ -4,7 +4,8 @@
 angular.module('app.config', [])
 
   // Your Firebase data URL goes here, no trailing slash
-  .constant('FBURL', 'https://flashdrink.firebaseio.com')
+  .constant('FBDATA', 'https://flashdrink.firebaseio.com')
+  .constant('FBSITE', 'https://flashdrinksapp.com')
 
   // See https://github.com/lefnire/server-misc
   .constant('SERVER', 'https://flashdrinks-server.herokuapp.com')
