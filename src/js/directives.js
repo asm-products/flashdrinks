@@ -69,3 +69,30 @@ angular.module('app.directives', [])
     }
   }
 })
+
+.directive('mobileOnly', function($ionicPopup){
+  return {
+    restrict: 'A',
+    priority: 1,
+    link: function(scope, element, attrs) {
+      element.on('click', function (evt) {
+        if (window.cordova) return;
+        evt.stopPropagation();
+        $ionicPopup.show({
+          //template: 'This feature is only available via the mobile app.',
+          title: 'This feature only available via the mobile app.',
+          buttons: [
+            {text: 'Cancel'},
+            {
+              text: 'Download',
+              type: 'button-positive',
+              onTap: function (e) {
+                window.open('https://play.google.com/store/apps/details?id=com.ocdevel.flashdrinks', '_blank');
+              }
+            }
+          ]
+        })
+      })
+    }
+  }
+})

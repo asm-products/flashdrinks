@@ -99,7 +99,7 @@ angular.module('app.controllers', [])
       }
     })
     ContactsService.sendSMS(phoneContacts, bar);
-    $scope.closeModal();
+    $scope.modal.close();
   }
 
   // ---- MODAL ----

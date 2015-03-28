@@ -11,5 +11,5 @@ ion-modal-view
           input(type='checkbox')
         | {{::profile.displayName || profile.name}}
   ion-footer-bar
-    button.button.icon-left.ion-search(ng-click='pickContact()') Select Contact
+    button.button.icon-left.ion-search(ng-click='pickContact()', mobile-only) Select Contact
     button.button.button-positive.icon-left.ion-paper-airplane(ng-click='sendInvites(data.selectedContacts, bar)') Send Invites
