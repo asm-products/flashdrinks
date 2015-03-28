@@ -272,7 +272,7 @@ angular.module('app.services', [])
           //intent: '' // send SMS without open any other app
         }
       };
-      var message = "Come to the bar with me tonight! Deets at "+FBSITE+"/#/tab/bars/"+bar.id;
+      var message = "Come to the bar with me tonight! Deets at "+FBSITE+"/#/app/bars/"+bar.id;
       $window.sms.send(nums, message, options, function(){
         console.log('message sent successfully');
         $scope.data.selectedContacts = [];
