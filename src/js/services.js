@@ -73,7 +73,7 @@ angular.module('app.services', [])
       // TODO extend service for defaults https://www.firebase.com/docs/web/libraries/angular/guide/extending-services.html#section-firebaseobject
       _.defaults(bar.sync, {rsvps:{}, count:0});
       var user = Auth.getUser();
-      bar.sync.rsvps[user.$id] = !bar.sync.rsvps[user.$id];
+      bar.sync.rsvps[user.$id] ? delete bar.sync.rsvps[user.$id] : bar.sync.rsvps[user.$id] = true;
       bar.sync.count += (bar.sync.rsvps[user.$id] ? 1 : -1);
       if (!bar.sync.count) delete bar.sync.count;
       // Used to later reset on the next day. Not using Firebase.ServerValue.TIMESTAMP since we want local time.
