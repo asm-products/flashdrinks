@@ -44,8 +44,11 @@ angular.module('app.services', [])
           bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
           // If the last person to RSVP was before 4am, reset the RSVPs
           var lastIn = moment(bar.sync.lastIn);
-          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4)
-            bar.sync.$remove('rsvps');
+          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) {
+            delete bar.sync.rsvps;
+            bar.sync.count = 0;
+            bar.sync.$save();
+          }
         })
       }).error(deferred.reject);
 
