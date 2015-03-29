@@ -2,7 +2,7 @@
 <widget id="com.ocdevel.flashdrinks" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Flashdrinks</name>
   <description>Find drinking partners nearby.</description>
-  <author email="tylerrenelle@gmail.com" href="https://flashdrink.firebaseapp.com/">Tyler Renelle</author>
+  <author email="tylerrenelle@gmail.com" href="https://flashdrinksapp.com/">Tyler Renelle</author>
   <content src="index.html"/>
   <access origin="*"/>
   <access launch-external="yes" origin="geo:*"/>
