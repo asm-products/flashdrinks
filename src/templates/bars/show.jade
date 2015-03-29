@@ -22,9 +22,12 @@ ion-view(view-title='{{::bar.name}}')
           ion-item.item-avatar(ng-repeat='(uid,v) in bar.sync.rsvps', href='#/app/friends/{{::profile.$id}}', ng-init='profile=Friends.get(uid)')
             img(ng-src='{{::profile.picture}}')
             h2 {{::profile.name}}
-      a.item.item-icon-left(ng-href='geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}', target='_blank')
+
+      //-.item.item-icon-left.item-icon-right(system-link='::bar.location.coordinate.latitude+","+bar.location.coordinate.longitude', is-map)
+      .item.item-icon-left.item-icon-right(system-link='::bar.location.display_address[0]+" "+bar.location.display_address[2]', is-map)
         i.icon.ion-map
         | {{::bar.distance*0.000621371192 | number:2}} miles away
+        i.icon.icon-accessory.ion-chevron-right
 
       //- Adds a "Deals" divider, commented out becuase I've never seen more than one deal, and this adds clutter if only one deal.
         .item.item-divider.item-balanced(title='Deals', ng-if='::bar.deals')

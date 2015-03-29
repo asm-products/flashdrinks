@@ -61,9 +61,13 @@ angular.module('app.directives', [])
       element.attr('style', 'cursor:pointer;');
       element.on('click', function(evt){
         evt.preventDefault();
-        window.cordova ?
-          $cordovaInAppBrowser.open(scope.systemLink, '_system') :
-          window.open(scope.systemLink, '_blank'/*, 'location=yes'*/);
+        var link = scope.systemLink;
+        if (attrs.isMap) {
+          // see http://habaneroconsulting.com/insights/Opening-native-map-apps-from-the-mobile-browser.aspx
+          //link = (window.cordova ? (ionic.isAndroid ? 'geo:' : 'maps:') : 'https://maps.google.com?q=') + link;
+          link = (window.cordova && ionic.isAndroid ? 'geo:' : 'https://maps.google.com?q=') + link;
+        }
+        window.cordova ? $cordovaInAppBrowser.open(link, '_system') : window.open(link, '_blank'/*, 'location=yes'*/);
         return false;
       })
     }
