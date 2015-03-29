@@ -17,6 +17,8 @@ ion-view(view-title='Bars')
           br
           span {{::bar.distance*0.000621371192 | number:2}} miles away
         .icon.multi-icon
+          span.badge.badge-balanced(ng-if='::bar.deals')
+            i(ng-class='::{"ion-pricetag": bar.deals.length==1, "ion-pricetags": bar.deals.length>1}')
           span.badge.badge-assertive(ng-if='user.notifs.invites[bar.id]')
             i.ion-beer
           span.badge(ng-if='bar.sync.count>0', ng-class="{'badge-assertive': user.notifs.rsvps[bar.id]}")

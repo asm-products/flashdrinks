@@ -25,4 +25,18 @@ ion-view(view-title='{{::bar.name}}')
       a.item.item-icon-left(ng-href='geo:{{::bar.location.coordinate.latitude}},{{::bar.location.coordinate.longitude}}', target='_blank')
         i.icon.ion-map
         | {{::bar.distance*0.000621371192 | number:2}} miles away
+
+      //- Adds a "Deals" divider, commented out becuase I've never seen more than one deal, and this adds clutter if only one deal.
+        .item.item-divider.item-balanced(title='Deals', ng-if='::bar.deals')
+          | Deals
+        .item.item-icon-left.item-icon-right(ng-if='::bar.deals', ng-repeat='deal in ::bar.deals', system-link='::deal.url')
+          i.icon.ion-pricetag
+          | {{::deal.title}}
+          i.icon.icon-accessory.ion-chevron-right
+      .item.item-icon-left.item-icon-right.item-balanced(ng-if='::bar.deals', system-link='::bar.deals[0].url')
+        i.icon.ion-pricetag
+        | {{::bar.deals[0].title}}
+        i.icon.icon-accessory.ion-chevron-right
+
+
       chat-list(chat-id='bar.id', type='bar')
