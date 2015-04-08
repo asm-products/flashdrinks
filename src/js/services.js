@@ -112,7 +112,7 @@ angular.module('app.services', [])
   return {};
 })
 
-.factory('Auth', function($q, ref, $firebase, $firebaseAuth, $rootScope){
+.factory('Auth', function($q, ref, $firebase, $firebaseAuth, $rootScope, $ionicLoading){
   var authObj = $firebaseAuth(ref.root);
 
   var user = {$id:'anon'};
@@ -153,25 +153,32 @@ angular.module('app.services', [])
 
     },
     facebook: function(){
+      $ionicLoading.show({template: 'Authenticating...'});
+
       // App
       if (window.facebookConnectPlugin) {
         window.facebookConnectPlugin.login(['email', 'public_profile', 'user_friends'], function(status) {
           window.facebookConnectPlugin.getAccessToken(function(token) {
             // Authenticate with Facebook using an existing OAuth 2.0 access token
             ref.root.authWithOAuthToken("facebook", token, function(error) {
+              $ionicLoading.hide();
               if (error) {
                 alert('Firebase login failed!'+error);
-                console.log('Firebase login failed!', error);
+                console.dir(error);
               }
             });
           }, function(error) {
             alert('Could not get access token'+error);
+            console.dir(error);
           });
         }, function(error) {
           alert('An error occurred logging the user in'+error)
+          console.dir(error);
         });
+
       // Website
       } else {
+        $ionicLoading.hide();
         authObj.$authWithOAuthPopup("facebook");
       }
 
