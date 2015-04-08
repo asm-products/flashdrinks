@@ -4,7 +4,7 @@ ion-view(view-title='Bars')
     button.button.icon.button-icon.ion-search(ng-click='data.searching = !data.searching')
 
   ion-content
-    ion-refresher(pulling-text='Pull to refresh...', on-refresh='refresh(true)')
+    ion-refresher(pulling-text='Pull to refresh...', on-refresh='loadMore(true)')
     ion-list
       label.item.item-input(ng-if='data.searching')
         i.icon.ion-search.placeholder-icon
@@ -28,4 +28,4 @@ ion-view(view-title='Bars')
             | {{bar.chats.length}}
             i.ion-chatbubbles
         i.icon.ion-chevron-right.icon-accessory
-    ion-infinite-scroll(on-infinite='loadMore()', distance='1%')
+    ion-infinite-scroll(on-infinite='loadMore(false)', distance='1%')

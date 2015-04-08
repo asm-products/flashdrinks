@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation, CacheFactory) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform) {
   var deferred, bars;
 
   CacheFactory('barsCache', {
@@ -27,34 +27,38 @@ angular.module('app.services', [])
 
     // TODO implement geo watcher http://ngcordova.com/docs/plugins/geolocation/
     //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
-    $cordovaGeolocation.getCurrentPosition({maximumAge:300000, timeout:10000}).then(function (position) {
-      var params = {
-        // See https://www.yelp.com/developers/documentation/v2/all_category_list. Parent category `nightlife` includes
-        // too much, we exclude adultentertainment,coffeeshops,comedyclubs,countrydancehalls,dancerestaurants,fasil
-        category_filter: 'bars,beergardens,danceclubs,jazzandblues,karaoke,musicvenues,pianobars,poolhalls',
-        ll: position.coords.latitude + ',' + position.coords.longitude,
-        offset: opts.offset || 0
-      };
-      // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-      $http.get(SERVER+'/yelp-search', {params: params, cache: CacheFactory.get('barsCache')}).success(function(results){
-        bars = _.uniq(bars.concat(results.businesses), 'id');
-        deferred.resolve(bars);
-        _.each(results.businesses, function (bar) {
-          bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
-          bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
-          // If the last person to RSVP was before 4am, reset the RSVPs
-          var lastIn = moment(bar.sync.lastIn);
-          if (!lastIn.isSame(new Date, 'day') || lastIn.hour()<4) {
-            delete bar.sync.rsvps;
-            bar.sync.count = 0;
-            bar.sync.$save();
-          }
-        })
-      }).error(deferred.reject);
+    $ionicPlatform.ready(function() {
+      $cordovaGeolocation.getCurrentPosition({maximumAge: 300000, timeout: 10000}).then(function (position) {
+        var params = {
+          // See https://www.yelp.com/developers/documentation/v2/all_category_list. Parent category `nightlife` includes
+          // too much, we exclude adultentertainment,coffeeshops,comedyclubs,countrydancehalls,dancerestaurants,fasil
+          category_filter: 'bars,beergardens,danceclubs,jazzandblues,karaoke,musicvenues,pianobars,poolhalls',
+          ll: position.coords.latitude + ',' + position.coords.longitude,
+          offset: opts.offset || 0
+        };
+        // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
+        $http.get(SERVER + '/yelp-search', {
+          params: params,
+          cache: CacheFactory.get('barsCache')
+        }).success(function (results) {
+          bars = _.uniq(bars.concat(results.businesses), 'id');
+          deferred.resolve(bars);
+          _.each(results.businesses, function (bar) {
+            bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
+            bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
+            // If the last person to RSVP was before 4am, reset the RSVPs
+            var lastIn = moment(bar.sync.lastIn);
+            if (!lastIn.isSame(new Date, 'day') || lastIn.hour() < 4) {
+              delete bar.sync.rsvps;
+              bar.sync.count = 0;
+              bar.sync.$save();
+            }
+          })
+        }).error(deferred.reject);
 
-    }, deferred.reject)
+      }, deferred.reject)
+    })
   }
-  search({refresh:true});
 
   return {
     all: function(refresh) {
@@ -66,8 +70,8 @@ angular.module('app.services', [])
         return _.find(bars, {id:barId});
       });
     },
-    loadMore: function(){
-      search({offset: bars.length});
+    loadMore: function(refresh){
+      search((refresh || !bars)? {refresh:true} : {offset:bars.length});
       return deferred.promise;
     },
     rsvp: function(bar){

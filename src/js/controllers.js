@@ -35,16 +35,8 @@ angular.module('app.controllers', [])
   $scope.data = {
     searching:false
   };
-  $scope.refresh = function(force){
-    Bars.all(force).then(function(bars){
-      $scope.bars = bars;
-      $scope.$broadcast('scroll.refreshComplete');
-    }, function(){
-      debugger;
-    });
-  }
-  $scope.loadMore = function(){
-    Bars.loadMore().then(function(bars){
+  $scope.loadMore = function(refresh){
+    Bars.loadMore(refresh).then(function(bars){
       $scope.bars = bars;
       $scope.$broadcast('scroll.infiniteScrollComplete');
       $scope.$broadcast('scroll.refreshComplete');
