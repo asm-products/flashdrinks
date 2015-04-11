@@ -1,7 +1,7 @@
 angular.module('app.services', [])
 
-.factory('ref', function($window, FBDATA){
-  var root = new $window.Firebase(FBDATA)
+.factory('ref', function($window){
+  var root = new $window.Firebase('<nconf:firebase:data>')
   var ref = {
     root: root,
     users: root.child('users'),
@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, SERVER, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform) {
   var deferred, bars;
 
   CacheFactory('barsCache', {
@@ -37,7 +37,7 @@ angular.module('app.services', [])
           offset: opts.offset || 0
         };
         // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-        $http.get(SERVER + '/yelp-search', {
+        $http.get('<nconf:server>/yelp-search', {
           params: params,
           cache: CacheFactory.get('barsCache')
         }).success(function (results) {
@@ -99,12 +99,12 @@ angular.module('app.services', [])
   }
 })
 
-.factory('Analytics' ,function($firebaseAuth, ASM_METRICS, ref){
+.factory('Analytics' ,function($firebaseAuth, ref){
   ;(function(p,l,o,w,i){if(!p[i]){p.__asml=p.__asml||[];
     p.__asml.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
     };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
     n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","https://d1uxm17u44dmmr.cloudfront.net/1.0.0/asml.js","asml"));
-  asml('create', ASM_METRICS);
+  asml('create', '<nconf:asm_metrics>');
 
   var authObj = $firebaseAuth(ref.root);
   var uid = authObj.$getAuth() && authObj.$getAuth().uid;
@@ -252,7 +252,7 @@ angular.module('app.services', [])
   return friends;
 })
 
-.service("ContactsService", function($q, $window, FBSITE) {
+.service("ContactsService", function($q, $window) {
     var formatContact = function(contact) {
       return {
         "displayName"   : contact.name.formatted || contact.name.givenName + " " + contact.name.familyName || "Mystery Person",
@@ -286,7 +286,7 @@ angular.module('app.services', [])
           //intent: '' // send SMS without open any other app
         }
       };
-      var message = "Come to the bar with me tonight! Deets at "+FBSITE+"/#/app/bars/"+bar.id;
+      var message = "Come to the bar with me tonight! Deets at <nconf:firebase:site>/#/app/bars/"+bar.id;
       $window.sms.send(nums, message, options, function(){
         console.log('message sent successfully');
         $scope.data.selectedContacts = [];
@@ -355,7 +355,7 @@ angular.module('app.services', [])
   return {
     registerApp: function(){
       var androidConfig = {
-        "senderID":"", //This is the project/sender ID from Google, created in Part A
+        "senderID": "<nconf:push:GCM>", //This is the project/sender ID from Google, created in Part A
         "ecb":"onAndroidNotification" //This is the function we will call when a push notification arrives. This will be detailed in the next step.
       };
       cordova.getAppVersion(function(version) {

@@ -1,0 +1,11 @@
+{
+  "firebase": {
+    "site": "https://flashdrinksapp.com",
+    "data": "https://flashdrink.firebaseio.com"
+  },
+  "server": "https://flashdrinks-server.herokuapp.com",
+  "asm_metrics": "See https://assembly.com/flashdrinks/metrics/snippet",
+  "push": {
+    "GCM": "See http://t.yc.sg/post/102663623041/amazon-sns-with-ionic-framework-part-1-android"
+  }
+}

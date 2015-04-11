@@ -7,3 +7,4 @@ platforms/
 plugins/
 www/*
 .idea
+config.json

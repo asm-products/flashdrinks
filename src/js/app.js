@@ -4,7 +4,6 @@ angular.module('app', [
   'firebase',
   'angular-cache',
   'angular-lodash',
-  'app.config',
   'app.controllers',
   'app.services',
   'app.directives',

@@ -16,8 +16,10 @@ var protractor = gulpProtractor.protractor;
 var gulpif = require('gulp-if');
 var del = require('del');
 var jade = require('gulp-jade');
+var replace = require('gulp-replace');
 var nconf = require('nconf');
-nconf.argv();
+nconf.argv().env().file({ file: './config.json' });
+//nconf.argv();
 
 var paths = {
   sass: [
@@ -98,6 +100,7 @@ gulp.task('copy', function(){
 
 gulp.task('scripts', function(){
   return gulp.src(paths.scripts)
+    .pipe(replace(/<nconf\:(.*)>/g, function(match, a1){return nconf.get(a1)}))
     .pipe(ngAnnotate())
     .pipe(gulpif(nconf.get('release'), uglify()))
     .pipe(concat('scripts.js'))
