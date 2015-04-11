@@ -40,6 +40,7 @@ var paths = {
     "./bower_components/moment/moment.js",
     "./bower_components/firebase-on-error/src/onerror.js",
     "./bower_components/angular-cache/dist/angular-cache.js",
+    "./bower_components/ngstorage/ngStorage.js",
     "./src/js/**/*.js"
   ],
   bower_components: [

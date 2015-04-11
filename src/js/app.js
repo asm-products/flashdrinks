@@ -7,10 +7,11 @@ angular.module('app', [
   'app.config',
   'app.controllers',
   'app.services',
-  'app.directives'
+  'app.directives',
+  'ngStorage' // TODO remove this and use existing angular-cache instead
 ])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, PushService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,6 +22,7 @@ angular.module('app', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    window.setTimeout(function(){PushService.registerApp()}, 100); // FIXME very expensive op, push to webworker?
   });
 })
 

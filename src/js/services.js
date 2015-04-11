@@ -301,3 +301,76 @@ angular.module('app.services', [])
       sendSMS: sendSMS
     };
   })
+
+// SNS PushPlugin, See http://t.yc.sg/post/102663623041/amazon-sns-with-ionic-framework-part-1-android
+.service("PushService", function($localStorage, $cordovaPush) {
+  window.onAndroidNotification = function(e) {
+    var elem = angular.element(document.querySelector('[ng-app]'));
+    var injector = elem.injector();
+    switch( e.event ) {
+      case 'registered':
+        if (e.regid.length > 0) {
+          console.info("Android Registration ID: " + e.regid);
+
+          //Your GCM push server needs to know the regID before it can push to this device here is where you might want to send it the regID for later use.
+          var postData = {
+            "token": e.regid,
+            "platform": "GCM"
+          };
+
+          injector.get('$http').post("<nconf:server>/subscribe-push", postData)
+            .success(function(data, status, headers, config) {
+              var localStorageService = injector.get('$localStorage');
+              localStorageService.pushNotificationId = e.regid;
+              localStorageService.registeredAppVersion = appVersion;
+            })
+            .error(function(data, status, headers, config) {
+              console.log(JSON.stringify(data));
+            });
+        }
+        break;
+
+      case 'message':
+        if (e.foreground) {
+          injector.get('$ionicPopup').confirm({
+            title: e.payload.title,
+            template: e.payload.message
+          }).then(function(res) {
+            if(res) injector.get('$state').go(e.payload.action);
+          });
+        } else {
+          injector.get('$state').go(e.payload.action);
+        }
+        break;
+
+      case 'error':
+        console.dir(error);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return {
+    registerApp: function(){
+      var androidConfig = {
+        "senderID":"", //This is the project/sender ID from Google, created in Part A
+        "ecb":"onAndroidNotification" //This is the function we will call when a push notification arrives. This will be detailed in the next step.
+      };
+      cordova.getAppVersion(function(version) {
+        console.info("Version: " + version);
+        var shouldRegister = !$localStorage.pushNotificationId || $localStorage.registeredAppVersion != version;
+        if (shouldRegister) {
+          if (device.platform == "Android") {
+            $cordovaPush.register(androidConfig).then(function(result) {
+              console.info('$cordovaPush.register succeeded. Result: '+ result);
+            }, function(err) {
+              console.info('$cordovaPush.register failed. Error: ' + err);
+            });
+          }
+        }
+      });
+    }
+  }
+})
