@@ -307,7 +307,7 @@ angular.module('app.services', [])
   })
 
 // SNS PushPlugin, see http://t.yc.sg/post/102663623041/amazon-sns-with-ionic-framework-part-1-android & http://ngcordova.com/docs/plugins/pushNotifications/
-.service("Push", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state) {
+.service("Push", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state, $ionicPlatform) {
   var appVersion;
 
   $rootScope.$on('$cordovaPush:notificationReceived', function(event, notification) {
@@ -357,6 +357,30 @@ angular.module('app.services', [])
     }
   });
 
+  // Register app
+  $ionicPlatform.ready(function() {
+    // But register it later, it's expensive. Use webworker?
+    window.setTimeout(function () {
+      cordova.getAppVersion(function (version) {
+        appVersion = version;
+        console.info("Version: " + version);
+        var config = {
+          android: {senderID: "<nconf:push:GCM>"}
+        };
+        var shouldRegister = !$localStorage.pushNotificationId || $localStorage.registeredAppVersion != version;
+        if (shouldRegister) {
+          if (device.platform == "Android") {
+            $cordovaPush.register(config.android).then(function (result) {
+              console.info('$cordovaPush.register succeeded. Result: ' + result);
+            }, function (err) {
+              console.info('$cordovaPush.register failed. Error: ' + err);
+            });
+          }
+        }
+      });
+    }, 1000);
+  });
+
   var snsBody = function(topic){
     return {
       token: $localStorage.pushNotificationId,
@@ -367,26 +391,6 @@ angular.module('app.services', [])
   }
 
   return {
-    registerApp: function(){
-      cordova.getAppVersion(function(version) {
-        appVersion = version;
-        console.info("Version: " + version);
-        var config = {
-          android: {senderID: "<nconf:push:GCM>"}
-        };
-        var shouldRegister = !$localStorage.pushNotificationId || $localStorage.registeredAppVersion != version;
-        if (shouldRegister) {
-          if (device.platform == "Android") {
-            $cordovaPush.register(config.android).then(function(result) {
-              console.info('$cordovaPush.register succeeded. Result: '+ result);
-            }, function(err) {
-              console.info('$cordovaPush.register failed. Error: ' + err);
-            });
-          }
-        }
-      });
-    },
-
     publish: function(topic){
       $http.post('<nconf:server>/push/publish', snsBody(topic));
     },

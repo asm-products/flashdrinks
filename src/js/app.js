@@ -21,11 +21,6 @@ angular.module('app', [
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    // Hack: very expensive op, use webworker?
-    window.setTimeout(function(){
-      angular.element(document.querySelector('[ng-app]')).injector().get('Push').registerApp();
-    }, 1000);
   });
 })
 
