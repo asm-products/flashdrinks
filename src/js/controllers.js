@@ -88,6 +88,7 @@ angular.module('app.controllers', [])
         phoneContacts.push(c);
       } else {
         ref.users.child(c.$id+'/notifs/invites/'+bar.id).set(true);
+        //TODO send Push notif
       }
     })
     ContactsService.sendSMS(phoneContacts, bar);

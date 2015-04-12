@@ -12,7 +12,7 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform) {
+.factory('Bars', function($q, ref, $firebase, Auth, $http, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform, Push) {
   var deferred, bars;
 
   CacheFactory('barsCache', {
@@ -52,6 +52,7 @@ angular.module('app.services', [])
               delete bar.sync.rsvps;
               bar.sync.count = 0;
               bar.sync.$save();
+              Push.deleteTopic(bar.id);
             }
           })
         }).error(deferred.reject);
@@ -95,6 +96,7 @@ angular.module('app.services', [])
             ref.users.child(k+'/notifs/rsvps/'+bar.id).set(true);
         })
       });
+      Push.publish(bar.id);
     }
   }
 })
@@ -242,11 +244,13 @@ angular.module('app.services', [])
     },
     chat: function(user, friend, text){
       if (!Auth.loggedIn()) return $rootScope.$broadcast('fd:auth:error');
-      $firebase(ref.chats.child( friends.chatId(user.$id, friend.$id) )).$asArray().$add({
+      var cid = friends.chatId(user.$id, friend.$id);
+      $firebase(ref.chats.child(cid)).$asArray().$add({
         timestamp: Firebase.ServerValue.TIMESTAMP,
         text: text,
         uid: user.$id
       });
+      Push.publish(cid);
     }
   }
   return friends;
@@ -303,7 +307,8 @@ angular.module('app.services', [])
   })
 
 // SNS PushPlugin, see http://t.yc.sg/post/102663623041/amazon-sns-with-ionic-framework-part-1-android & http://ngcordova.com/docs/plugins/pushNotifications/
-.service("PushService", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state) {
+.service("Push", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state) {
+  var appVersion;
 
   $rootScope.$on('$cordovaPush:notificationReceived', function(event, notification) {
     switch( notification.event ) {
@@ -313,12 +318,14 @@ angular.module('app.services', [])
 
           //Your GCM push server needs to know the regID before it can push to this device here is where you might want to send it the regID for later use.
           var postData = {
-            "token": notification.regid,
-            "platform": "GCM"
+            token: notification.regid,
+            platform: "GCM"
           };
 
-          $http.post("<nconf:server>/subscribe-push", postData)
+          $http.post("<nconf:server>/push/register", postData)
             .success(function(data, status, headers, config) {
+              console.dir(data);
+              $localStorage.endpointArn = data.EndpointArn;
               $localStorage.pushNotificationId = notification.regid;
               $localStorage.registeredAppVersion = appVersion;
             })
@@ -350,9 +357,19 @@ angular.module('app.services', [])
     }
   });
 
+  var snsBody = function(topic){
+    return {
+      token: $localStorage.pushNotificationId,
+      EndpointArn: $localStorage.endpointArn,
+      platform: 'GCM',
+      topic: topic
+    }
+  }
+
   return {
     registerApp: function(){
       cordova.getAppVersion(function(version) {
+        appVersion = version;
         console.info("Version: " + version);
         var config = {
           android: {senderID: "<nconf:push:GCM>"}
@@ -368,6 +385,15 @@ angular.module('app.services', [])
           }
         }
       });
+    },
+
+    publish: function(topic){
+      $http.post('<nconf:server>/push/publish', snsBody(topic));
+    },
+    //TODO unsubscribe
+
+    deleteTopic: function(topic){
+      $http.post('<nconf:server>/push/delete-topic', snsBody(topic));
     }
   }
 })
