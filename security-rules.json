@@ -12,6 +12,7 @@
       "$uid": {
         "name": {".write": "auth.uid == $uid"},
         "picture": {".write": "auth.uid == $uid"},
+        "arn": {".write": "auth.uid == $uid"},
         "notifs": {".write": true},
         "provider": {".write": "auth.uid == $uid"},
         "friends": {

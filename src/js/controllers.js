@@ -33,7 +33,8 @@ angular.module('app.controllers', [])
 
 .controller('BarListCtrl', function($scope, Bars, $ionicLoading) {
   $scope.data = {
-    searching:false
+    searching:false,
+    search: ''
   };
   $scope.loadMore = function(refresh){
     Bars.loadMore(refresh).then(function(bars){
@@ -59,7 +60,7 @@ angular.module('app.controllers', [])
   }
 })
 
-.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, Friends, Auth, $rootScope){
+.controller('InviteFriendsCtrl', function($scope, ContactsService, $ionicModal, ref, Friends, Auth, $rootScope, Push){
   $scope.data = {
     //FIXME this isn't available if you start from bar-show for some reason
     selectedContacts : _.map($scope.user.friends, function(v,k){
@@ -88,7 +89,10 @@ angular.module('app.controllers', [])
         phoneContacts.push(c);
       } else {
         ref.users.child(c.$id+'/notifs/invites/'+bar.id).set(true);
-        //TODO send Push notif
+        
+        ref.users.child(c.$id+'/arn').once('value', function(snap){
+          Push.publish(snap.val());
+        })
       }
     })
     ContactsService.sendSMS(phoneContacts, bar);

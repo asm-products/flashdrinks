@@ -307,7 +307,7 @@ angular.module('app.services', [])
   })
 
 // SNS PushPlugin, see http://t.yc.sg/post/102663623041/amazon-sns-with-ionic-framework-part-1-android & http://ngcordova.com/docs/plugins/pushNotifications/
-.service("Push", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state, $ionicPlatform) {
+.service("Push", function($localStorage, $cordovaPush, $rootScope, $http, $ionicPopup, $state, Auth, $ionicPlatform) {
   var appVersion;
 
   $rootScope.$on('$cordovaPush:notificationReceived', function(event, notification) {
@@ -328,6 +328,11 @@ angular.module('app.services', [])
               $localStorage.endpointArn = data.EndpointArn;
               $localStorage.pushNotificationId = notification.regid;
               $localStorage.registeredAppVersion = appVersion;
+
+              // TODO
+              // 1) is this secure? storing arn publicly so we can send push to individual users
+              // 2) store multiple arns: GCM, APNS: {arn: GCM:"", APNS:""}
+              Auth.getUser().set({arn:data.EndpointArn});
             })
             .error(function(data, status, headers, config) {
               console.log(JSON.stringify(data));
