@@ -12,7 +12,39 @@ angular.module('app.services', [])
 
 })
 
-.factory('Bars', function($q, ref, $firebase, Auth, $http, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform, Push) {
+.factory('GMaps', function($q){
+  var map;
+  var service;
+  var infowindow;
+
+  return {
+    search: function(lat, lng) {
+      var deferred = $q.defer();
+      var pyrmont = new google.maps.LatLng(lat, lng);
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: pyrmont,
+        zoom: 15
+      });
+      var request = {
+        location: pyrmont,
+        radius: '500',
+        types: ['bar']
+      };
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, function(results, status){
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+          deferred.resolve(results);
+          //createMarker(results[i]);
+        } else {
+          deferred.reject(status);
+        }
+      });
+      return deferred.promise;
+    }
+  }
+})
+
+.factory('Bars', function(GMaps, $q, ref, $firebase, Auth, $http, Friends, $rootScope, $cordovaGeolocation, CacheFactory, $ionicPlatform, Push) {
   var deferred, bars;
 
   CacheFactory('barsCache', {
@@ -29,21 +61,14 @@ angular.module('app.services', [])
     //navigator.geolocation.getCurrentPosition = function(cb) {return cb({coords:{latitude:40.7788490, longitude:-111.8939440}})};
     $ionicPlatform.ready(function() {
       $cordovaGeolocation.getCurrentPosition({maximumAge: 300000, timeout: 10000}).then(function (position) {
-        var params = {
-          // See https://www.yelp.com/developers/documentation/v2/all_category_list. Parent category `nightlife` includes
-          // too much, we exclude adultentertainment,coffeeshops,comedyclubs,countrydancehalls,dancerestaurants,fasil
-          category_filter: 'bars,beergardens,danceclubs,jazzandblues,karaoke,musicvenues,pianobars,poolhalls',
-          ll: position.coords.latitude + ',' + position.coords.longitude,
-          offset: opts.offset || 0
-        };
-        // move yelp to custom server, due to oauth security creds requirement (see 6bb76dd)
-        $http.get('<nconf:server>/yelp-search', {
-          params: params,
-          cache: CacheFactory.get('barsCache')
-        }).success(function (results) {
-          bars = _.uniq(bars.concat(results.businesses), 'id');
+
+        //cache: CacheFactory.get('barsCache')
+        //offset:0
+        GMaps.search(position.coords.latitude, position.coords.longitude).then(function (results) {
+          bars = _.uniq(bars.concat(results), 'id');
           deferred.resolve(bars);
-          _.each(results.businesses, function (bar) {
+          _.each(results, function (bar) {
+            bar.img_url = bar.photos && bar.photos[0].getUrl({maxWidth:100, maxHeight:100}); // fixme ????
             bar.chats = $firebase(ref.chats.child(bar.id)).$asArray();
             bar.sync = $firebase(ref.bars.child(bar.id)).$asObject();
             // If the last person to RSVP was before 4am, reset the RSVPs
@@ -55,7 +80,7 @@ angular.module('app.services', [])
               Push.deleteTopic(bar.id);
             }
           })
-        }).error(deferred.reject);
+        }).catch(deferred.reject);
 
       }, deferred.reject)
     })
@@ -366,6 +391,7 @@ angular.module('app.services', [])
   $ionicPlatform.ready(function() {
     // But register it later, it's expensive. Use webworker?
     window.setTimeout(function () {
+      if (typeof cordova == 'undefined'|| !cordova.getAppVersion) return; // web
       cordova.getAppVersion(function (version) {
         appVersion = version;
         console.info("Version: " + version);
